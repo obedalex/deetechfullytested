@@ -501,10 +501,13 @@ body {
     flex: 0 0 calc((100% - 14px - (var(--home-mobile-pad) * 2)) / 2);
     max-width: calc((100% - 14px - (var(--home-mobile-pad) * 2)) / 2);
     scroll-snap-align: start;
-    border-radius: 0;
-    border: none;
-    box-shadow: none;
-    background: transparent;
+    border-radius: 14px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    background: #ffffff;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
   }
 
   .home-product-section .product-media {
@@ -516,8 +519,9 @@ body {
     align-items: center;
     justify-content: center;
     aspect-ratio: 1 / 0.9;
-    padding: 0.4rem;
-    background: #ffffff;
+    padding: 0;
+    background: transparent;
+    -webkit-tap-highlight-color: transparent;
   }
 
   .home-product-section .product-media img {
@@ -528,7 +532,7 @@ body {
   }
 
   .home-product-section .product-info {
-    padding: 0.55rem 0.1rem 0.3rem;
+    padding: 0.55rem 0.7rem 0.7rem;
     gap: 0.18rem;
   }
 
@@ -573,16 +577,36 @@ body {
     padding: 0.72rem 0.7rem;
     font-size: 0.74rem;
     border-radius: 999px;
-    background: #ffffff;
-    color: #6b7280;
-    border: 1px solid #d8dee8;
-    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.14);
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .home-product-section .add-to-cart:hover,
-  .home-product-section .buy-now:hover {
+  .home-product-section .add-to-cart {
+    background: var(--product-primary);
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 8px 18px rgba(47, 143, 220, 0.28);
+  }
+
+  .home-product-section .add-to-cart:hover {
+    background: var(--product-primary-dark);
+    color: #ffffff;
+  }
+
+  .home-product-section .buy-now {
     background: #ffffff;
-    color: #475569;
+    color: var(--product-primary);
+    border: 1px solid #bfd7ff;
+    box-shadow: 0 6px 14px rgba(15, 23, 42, 0.1);
+  }
+
+  .home-product-section .buy-now:hover {
+    background: #eff6ff;
+    color: #1d4ed8;
+  }
+
+  .home-product-section .product-card:hover {
+    transform: none;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
   }
 
   .home-scroll-wrap.has-scroll-arrows .home-scroll-controls {
