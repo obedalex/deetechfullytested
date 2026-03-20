@@ -64,26 +64,26 @@ const clearToken = () => localStorage.removeItem("token");
           <span class="mobile-bottom-nav__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M12 3 2 11h2v10h6v-6h4v6h6V11h2z"></path></svg>
           </span>
-          <span>Home</span>
+          <span>Home Page</span>
         </a>
         <a class="mobile-bottom-nav__item" data-route="products" href="${basePrefix}products.html">
           <span class="mobile-bottom-nav__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M21 7 12 2 3 7v10l9 5 9-5V7zm-9-3.18L17.74 7 12 10.18 6.26 7 12 3.82zM5 9.24l6 3.33v6.18l-6-3.33V9.24zm14 6.18-6 3.33v-6.18l6-3.33v6.18z"></path></svg>
           </span>
-          <span>Products</span>
+          <span>Shop Products</span>
         </a>
         <a class="mobile-bottom-nav__item is-center" data-route="cart" href="${basePrefix}cart.html">
           <span class="mobile-bottom-nav__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h2l2.2 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.76L21 8H8"></path><circle cx="10" cy="19" r="1.6"></circle><circle cx="17" cy="19" r="1.6"></circle></svg>
           </span>
-          <span>Cart</span>
+          <span>My Cart</span>
           <span class="mobile-bottom-nav__badge is-hidden" id="mobileBottomNavBadge">0</span>
         </a>
         <a class="mobile-bottom-nav__item" data-route="account" href="${basePrefix}login.html" id="mobileBottomNavAccountLink">
           <span class="mobile-bottom-nav__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4.42 0-8 2-8 4.5V21h16v-2.5C20 16 16.42 14 12 14z"></path></svg>
           </span>
-          <span id="mobileBottomNavAccountLabel">Login</span>
+          <span id="mobileBottomNavAccountLabel">Account Login</span>
         </a>
       </div>
     `;
@@ -127,7 +127,7 @@ const clearToken = () => localStorage.removeItem("token");
       accountLink.href = user ? "account.html" : "login.html";
     }
     if (accountLabel) {
-      accountLabel.textContent = user ? "Account" : "Login";
+      accountLabel.textContent = user ? "My Account" : "Account Login";
     }
 
     const badge = document.getElementById("mobileBottomNavBadge");
@@ -168,11 +168,11 @@ const clearToken = () => localStorage.removeItem("token");
           </a>
 
           <ul class="nav-menu">
-            <li><a class="nav-link ${path.includes('index.html') ? "active" : ""}" href="${basePrefix}index.html">Home</a></li>
-            <li><a class="nav-link ${path.includes('products.html') ? "active" : ""}" href="${basePrefix}products.html">Products</a></li>
-            <li><a class="nav-link ${path.includes('about.html') ? "active" : ""}" href="${basePrefix}about.html">About</a></li>
-            <li><a class="nav-link ${path.includes('contact.html') ? "active" : ""}" href="${basePrefix}contact.html">Support</a></li>
-            <li><a class="nav-link ${path.includes('affiliates.html') ? "active" : ""}" href="${basePrefix}affiliates.html">Affiliates</a></li>
+            <li><a class="nav-link ${path.includes('index.html') ? "active" : ""}" href="${basePrefix}index.html">Home Page</a></li>
+            <li><a class="nav-link ${path.includes('products.html') ? "active" : ""}" href="${basePrefix}products.html">Shop Products</a></li>
+            <li><a class="nav-link ${path.includes('about.html') ? "active" : ""}" href="${basePrefix}about.html">About Deetech</a></li>
+            <li><a class="nav-link ${path.includes('contact.html') ? "active" : ""}" href="${basePrefix}contact.html">Support Center</a></li>
+            <li><a class="nav-link ${path.includes('affiliates.html') ? "active" : ""}" href="${basePrefix}affiliates.html">Affiliate Program</a></li>
           </ul>
 
           <div class="nav-icons">
@@ -199,9 +199,9 @@ const clearToken = () => localStorage.removeItem("token");
               </button>
               <div class="dropdown-menu" id="userDropdown">
                 <div class="dropdown-user-info" id="dropdownUserEmail"></div>
-                <a href="${basePrefix}account.html" class="dropdown-item auth-only">My Account</a>
-                <a href="${basePrefix}orders.html" class="dropdown-item auth-only">Orders</a>
-                <a href="${basePrefix}wishlist.html" class="dropdown-item auth-only">Wishlist</a>
+                <a href="${basePrefix}account.html" class="dropdown-item auth-only">My Account Dashboard</a>
+                <a href="${basePrefix}orders.html" class="dropdown-item auth-only">Order History</a>
+                <a href="${basePrefix}wishlist.html" class="dropdown-item auth-only">Saved Wishlist</a>
                 <a href="${adminPrefix}admin.html" class="dropdown-item admin-only">Admin Dashboard</a>
                 <button class="dropdown-item logout" id="logoutBtn">Logout</button>
               </div>
@@ -269,7 +269,7 @@ const clearToken = () => localStorage.removeItem("token");
                 </div>
               </div>
             </a>
-            <a href="${basePrefix}login.html" class="mobile-login-btn" id="mobileLoginBtn">Login</a>
+            <a href="${basePrefix}login.html" class="mobile-login-btn" id="mobileLoginBtn">Account Login</a>
           </div>
 
           <div class="mobile-menu-sections">
@@ -663,7 +663,7 @@ const clearToken = () => localStorage.removeItem("token");
     if (hasAffiliate) return;
 
     const li = document.createElement("li");
-    li.innerHTML = `<a href="affiliates.html">Affiliates</a>`;
+    li.innerHTML = `<a href="affiliates.html">Affiliate Program</a>`;
     ul.appendChild(li);
   }
 
