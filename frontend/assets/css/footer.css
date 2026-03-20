@@ -7,16 +7,35 @@
 .footer a{color:#e5e7eb}
 .footer a:hover{color:#ffcc00}
 .copyright{text-align:center;border-top:1px solid #1f2937;padding:12px 0;color:#9ca3af}
-.footer-social-links{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px 14px;
-  margin-top:14px;
+.footer-social-list{
+  display:grid;
+  gap:10px;
 }
-.footer-social-links a{
+.footer-social-list a{
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
   color:#e5e7eb;
   font-weight:500;
 }
-.footer-social-links a:hover{
+.footer-social-icon{
+  width:18px;
+  height:18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  color:#ffffff;
+  opacity:0.95;
+}
+.footer-social-icon svg{
+  width:18px;
+  height:18px;
+  display:block;
+}
+.footer-social-list a:hover{
   color:#ffcc00;
 }
+.footer-social-list a:hover .footer-social-icon{
+  color:#ffcc00;
+}
+
