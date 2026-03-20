@@ -64,26 +64,26 @@ const clearToken = () => localStorage.removeItem("token");
           <span class="mobile-bottom-nav__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M12 3 2 11h2v10h6v-6h4v6h6V11h2z"></path></svg>
           </span>
-          <span>Home Page</span>
+          <span>Home</span>
         </a>
         <a class="mobile-bottom-nav__item" data-route="products" href="${basePrefix}products.html">
           <span class="mobile-bottom-nav__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M21 7 12 2 3 7v10l9 5 9-5V7zm-9-3.18L17.74 7 12 10.18 6.26 7 12 3.82zM5 9.24l6 3.33v6.18l-6-3.33V9.24zm14 6.18-6 3.33v-6.18l6-3.33v6.18z"></path></svg>
           </span>
-          <span>Shop Products</span>
+          <span>Products</span>
         </a>
         <a class="mobile-bottom-nav__item is-center" data-route="cart" href="${basePrefix}cart.html">
           <span class="mobile-bottom-nav__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h2l2.2 9.2a1 1 0 0 0 1 .8H18a1 1 0 0 0 1-.76L21 8H8"></path><circle cx="10" cy="19" r="1.6"></circle><circle cx="17" cy="19" r="1.6"></circle></svg>
           </span>
-          <span>My Cart</span>
+          <span>Cart</span>
           <span class="mobile-bottom-nav__badge is-hidden" id="mobileBottomNavBadge">0</span>
         </a>
         <a class="mobile-bottom-nav__item" data-route="account" href="${basePrefix}login.html" id="mobileBottomNavAccountLink">
           <span class="mobile-bottom-nav__icon" aria-hidden="true">
             <svg viewBox="0 0 24 24"><path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4zm0 2c-4.42 0-8 2-8 4.5V21h16v-2.5C20 16 16.42 14 12 14z"></path></svg>
           </span>
-          <span id="mobileBottomNavAccountLabel">Account Login</span>
+          <span id="mobileBottomNavAccountLabel">Account</span>
         </a>
       </div>
     `;
@@ -127,7 +127,7 @@ const clearToken = () => localStorage.removeItem("token");
       accountLink.href = user ? "account.html" : "login.html";
     }
     if (accountLabel) {
-      accountLabel.textContent = user ? "My Account" : "Account Login";
+      accountLabel.textContent = "Account";
     }
 
     const badge = document.getElementById("mobileBottomNavBadge");
@@ -912,5 +912,6 @@ function guardProtected() {
   // Keep global fallback for non-module scripts
   window.auth = { getUser, setUser, clearUser, getToken, setToken, clearToken };
 })();
+
 
 
