@@ -1,4 +1,4 @@
-body {
+﻿body {
   overflow-x: hidden;
 }
 
@@ -473,8 +473,8 @@ body {
   .hero-controls {
     position: absolute;
     left: 50%;
-    bottom: -18px;
-    inset: auto auto -18px 50%;
+    bottom: 10px;
+    inset: auto auto 10px 50%;
     transform: translateX(-50%);
     width: auto;
     padding: 0;
@@ -739,6 +739,7 @@ body {
     aspect-ratio: 4 / 3;
   }
 }
+
 
 
 
