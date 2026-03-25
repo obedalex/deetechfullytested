@@ -123,19 +123,21 @@ body { padding-top: 70px; }
   font-weight: 500;
   font-size: 0.95rem;
   text-transform: uppercase;
-  padding: 1.5rem 1.25rem;
+  padding: 1.35rem 1.25rem 1.05rem;
   display: block;
   position: relative;
   transition: color 0.2s ease;
   font-family: "Roboto", "Helvetica Neue", sans-serif;
   letter-spacing: 0.5px;
+  line-height: 1.2;
+  white-space: nowrap;
 }
 
 .nav-link::after {
   content: "";
   position: absolute;
   left: 1.25rem;
-  bottom: -1px;
+  bottom: 0.72rem;
   width: 0;
   height: 2px;
   background: var(--navbar-hover);
@@ -166,7 +168,9 @@ body { padding-top: 70px; }
   border: none;
   color: var(--navbar-text);
   cursor: pointer;
-  padding: 0.5rem;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   border-radius: 6px;
   transition: all 0.2s ease;
   position: relative;
@@ -912,7 +916,7 @@ body { padding-top: 70px; }
   }
 
   .nav-link {
-    padding: 1.5rem 1rem;
+    padding: 1.35rem 1rem 1rem;
     font-size: 0.9rem;
   }
 
@@ -1219,3 +1223,6 @@ body { padding-top: 70px; }
               box-shadow 0.3s ease;
   will-change: transform;
 }
+
+
+
