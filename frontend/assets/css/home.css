@@ -456,19 +456,23 @@ body {
   .hero-media img {
     height: 100%;
     object-fit: cover;
+    object-position: center;
+    min-width: 100%;
+    max-width: 100%;
   }
   .hero-media {
     min-height: 0;
     aspect-ratio: 4 / 3;
   }
 
+
+
   .hero-overlay {
     padding: 8px 10px 12px;
     text-align: center;
     justify-content: flex-end;
-    background: linear-gradient(180deg, rgba(0, 0, 0, 0.2) 35%, rgba(0, 0, 0, 0.65));
+    background: transparent;
   }
-
 
   .hero-overlay > div {
     width: min(94%, 360px);
@@ -499,6 +503,25 @@ body {
     padding: 8px 20px;
   }
 
+  .hero {
+    margin-bottom: 0;
+  }
+
+  .hero::after {
+    content: "Get UPTO 10% OFF on your 1st order SHOP NOW";
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 10px 12px;
+    text-align: center;
+    font-size: 0.9rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #0f172a;
+    background: #edf1fb;
+    letter-spacing: 0.2px;
+  }
   .home-product-section {
     padding: 14px 0;
     width: 100vw;
@@ -685,6 +708,10 @@ body {
     aspect-ratio: 4 / 3;
   }
 }
+
+
+
+
 
 
 
