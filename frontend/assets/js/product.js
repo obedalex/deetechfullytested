@@ -158,6 +158,15 @@ document.addEventListener("DOMContentLoaded", () => {
     if (cartTotalEl) cartTotalEl.textContent = `GHC ${totalPrice.toFixed(2)}`;
   }
 
+  function resolveAuthToken() {
+    const fromAuth = typeof window.auth?.getToken === "function" ? window.auth.getToken() : null;
+    const fromStorage = typeof localStorage !== "undefined" ? localStorage.getItem("token") : null;
+    const raw = String(fromAuth || fromStorage || "").trim();
+    const token = raw.replace(/^Bearer\s+/i, "");
+    if (!token || token === "null" || token === "undefined") return null;
+    return token;
+  }
+
   function getStock(product) {
     return Number(product?.countInStock ?? product?.stock_quantity ?? product?.stock ?? 0);
   }
@@ -314,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    const token = window.auth?.getToken?.();
+    const token = resolveAuthToken();
     let reviews = [];
     let myReview = null;
 
@@ -642,7 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
         window.location.href = "checkout.html";
       });
 
-      const token = window.auth?.getToken?.();
+      const token = resolveAuthToken();
       const wishlistBtn = document.getElementById("wishlistBtn");
       const shareBtn = document.getElementById("shareBtn");
       if (!token) {
