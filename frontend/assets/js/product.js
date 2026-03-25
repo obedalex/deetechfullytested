@@ -298,7 +298,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const reviewRatingEl = document.getElementById("reviewRating");
     const reviewStarsInputEl = document.getElementById("reviewStarsInput");
     const reviewRatingTextEl = document.getElementById("reviewRatingText");
+    const reviewTitleEl = document.getElementById("reviewTitle");
     const reviewCommentEl = document.getElementById("reviewComment");
+    const reviewImageEl = document.getElementById("reviewImage");
+    const reviewImagePickerEl = document.getElementById("reviewImagePicker");
+    const reviewImagePreviewWrapEl = document.getElementById("reviewImagePreviewWrap");
+    const reviewImagePreviewEl = document.getElementById("reviewImagePreview");
+    const reviewImageRemoveBtnEl = document.getElementById("reviewImageRemoveBtn");
     const prodRatingEl = document.getElementById("prodRating");
     const prodReviewsEl = document.getElementById("prodReviews");
     if (!reviewsListEl || !reviewFormEl) return;
@@ -323,6 +329,42 @@ document.addEventListener("DOMContentLoaded", () => {
       if (reviewRatingTextEl) {
         reviewRatingTextEl.textContent = ratingLabels[rating] || "Select rating";
       }
+    }
+
+    let localImageUrl = "";
+
+    function clearImagePreview() {
+      if (localImageUrl) {
+        URL.revokeObjectURL(localImageUrl);
+        localImageUrl = "";
+      }
+      if (reviewImageEl) reviewImageEl.value = "";
+      if (reviewImagePreviewEl) reviewImagePreviewEl.src = "";
+      if (reviewImagePreviewWrapEl) reviewImagePreviewWrapEl.classList.add("hidden");
+      reviewImagePickerEl?.classList.remove("has-image");
+    }
+
+    function setImagePreview(src) {
+      if (!reviewImagePreviewEl || !reviewImagePreviewWrapEl) return;
+      reviewImagePreviewEl.src = resolveImage(src || "");
+      reviewImagePreviewWrapEl.classList.remove("hidden");
+      reviewImagePickerEl?.classList.add("has-image");
+    }
+
+    async function uploadReviewImage(file, token) {
+      if (!file) return "";
+      const fd = new FormData();
+      fd.append("image", file);
+      const uploadRes = await fetch(`${BASE_URL}/api/reviews/upload`, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${token}` },
+        body: fd,
+      });
+      const uploadPayload = await uploadRes.json().catch(() => ({}));
+      if (!uploadRes.ok) {
+        throw new Error(uploadPayload?.message || "Image upload failed");
+      }
+      return String(uploadPayload?.imageUrl || "").trim();
     }
 
     const token = resolveAuthToken();
@@ -350,13 +392,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const avg = count ? reviews.reduce((sum, r) => sum + Number(r.rating || 0), 0) / count : 0;
     if (prodRatingEl) prodRatingEl.textContent = starsFromRating(Math.round(avg || 0));
     if (prodReviewsEl) prodReviewsEl.textContent = `(${count} reviews)`;
-    if (reviewsSummaryEl) reviewsSummaryEl.textContent = count ? `${avg.toFixed(1)} / 5 \u2022 ${count} reviews` : "No reviews yet";
+    if (reviewsSummaryEl) reviewsSummaryEl.textContent = count ? `${avg.toFixed(1)} / 5 • ${count} reviews` : "No reviews yet";
 
     if (!token) {
       reviewFormEl.classList.add("hidden");
       myReviewPreviewEl?.classList.add("hidden");
       reviewAuthHintEl?.classList.remove("hidden");
       if (reviewAuthHintEl) reviewAuthHintEl.innerHTML = 'Sign in to leave a review. <a href="login.html">Login</a>';
+      clearImagePreview();
     } else {
       reviewAuthHintEl?.classList.add("hidden");
       const hasReview = Boolean(myReview?._id);
@@ -365,7 +408,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (reviewSubmitBtnEl) reviewSubmitBtnEl.textContent = hasReview ? "Update Review" : "Submit Review";
       if (reviewCancelEditBtnEl) reviewCancelEditBtnEl.classList.toggle("hidden", !hasReview);
       setRatingUI(hasReview ? Number(myReview.rating || 0) : 0);
+      if (reviewTitleEl) reviewTitleEl.value = hasReview ? String(myReview.title || "") : "";
       if (reviewCommentEl) reviewCommentEl.value = hasReview ? String(myReview.comment || "") : "";
+      clearImagePreview();
+      if (hasReview && myReview.image_url) setImagePreview(myReview.image_url);
 
       if (myReviewPreviewEl) {
         if (hasReview) {
@@ -375,7 +421,9 @@ document.addEventListener("DOMContentLoaded", () => {
               <span class="my-review-stars">${starsFromRating(myReview.rating)} (${Number(myReview.rating || 0)}/5)</span>
               <span class="my-review-date">${escapeHtml(formatReviewDate(myReview.updatedAt || myReview.createdAt))}</span>
             </div>
+            ${myReview.title ? `<p class="my-review-title">${escapeHtml(myReview.title)}</p>` : ""}
             <p class="my-review-comment">${escapeHtml(myReview.comment || "")}</p>
+            ${myReview.image_url ? `<img class="my-review-image" src="${resolveImage(myReview.image_url)}" alt="Your review image" width="120" height="120" loading="lazy" decoding="async">` : ""}
             <div class="my-review-actions">
               <button type="button" class="btn" id="showReviewEditBtn">Update Review</button>
             </div>
@@ -391,6 +439,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     }
+
+    reviewImagePickerEl?.addEventListener("click", () => reviewImageEl?.click());
+    reviewImagePickerEl?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        reviewImageEl?.click();
+      }
+    });
+
+    reviewImageEl?.addEventListener("change", () => {
+      const file = reviewImageEl.files?.[0];
+      if (!file) return;
+      if (!String(file.type || "").startsWith("image/")) {
+        showToast?.("Only image files are allowed", "info");
+        clearImagePreview();
+        return;
+      }
+      if (localImageUrl) URL.revokeObjectURL(localImageUrl);
+      localImageUrl = URL.createObjectURL(file);
+      setImagePreview(localImageUrl);
+    });
+
+    reviewImageRemoveBtnEl?.addEventListener("click", () => {
+      clearImagePreview();
+      if (myReview?.image_url) {
+        myReview.image_url = "";
+      }
+    });
 
     if (reviewStarsInputEl) {
       reviewStarsInputEl.querySelectorAll(".review-star-btn").forEach((btn) => {
@@ -416,7 +492,9 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
             <div class="review-date">${escapeHtml(formatReviewDate(review?.createdAt))}</div>
           </div>
+          ${review?.title ? `<p class="review-title">${escapeHtml(review.title)}</p>` : ""}
           <p class="review-comment">${escapeHtml(review?.comment || "")}</p>
+          ${review?.image_url ? `<img class="review-image" src="${resolveImage(review.image_url)}" alt="Review image" width="140" height="140" loading="lazy" decoding="async">` : ""}
         `;
         reviewsListEl.appendChild(node);
       });
@@ -435,25 +513,41 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const rating = Number(reviewRatingEl?.value || 0);
+      const title = String(reviewTitleEl?.value || "").trim();
       const comment = String(reviewCommentEl?.value || "").trim();
-      if (!rating || rating < 1 || rating > 5 || comment.length < 3) {
-        showToast?.("Please provide valid rating and comment", "info");
+      if (!rating || rating < 1 || rating > 5) {
+        showToast?.("Please provide a valid rating", "info");
+        return;
+      }
+      if (title.length < 2) {
+        showToast?.("Please enter a review title", "info");
+        return;
+      }
+      if (comment.length < 3) {
+        showToast?.("Please provide a valid comment", "info");
         return;
       }
 
-      const endpoint = myReview?._id
-        ? `${BASE_URL}/api/reviews/${encodeURIComponent(myReview._id)}`
-        : `${BASE_URL}/api/reviews/${encodeURIComponent(product._id)}`;
-      const method = myReview?._id ? "PUT" : "POST";
+      let imageUrl = myReview?.image_url ? String(myReview.image_url) : "";
+      const selectedImage = reviewImageEl?.files?.[0];
 
       try {
+        if (selectedImage) {
+          imageUrl = await uploadReviewImage(selectedImage, token);
+        }
+
+        const endpoint = myReview?._id
+          ? `${BASE_URL}/api/reviews/${encodeURIComponent(myReview._id)}`
+          : `${BASE_URL}/api/reviews/${encodeURIComponent(product._id)}`;
+        const method = myReview?._id ? "PUT" : "POST";
+
         const response = await fetch(endpoint, {
           method,
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ rating, comment }),
+          body: JSON.stringify({ rating, title, comment, image_url: imageUrl }),
         });
         const payload = await response.json();
         if (!response.ok) throw new Error(payload?.message || "Review submit failed");
@@ -473,7 +567,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (reviewFormWrapEl) reviewFormWrapEl.classList.remove("hidden");
   }
-
   async function loadProduct() {
     try {
       const product = await fetchProductWithFallback(productId);
@@ -837,6 +930,9 @@ document.addEventListener("DOMContentLoaded", () => {
   wireTabs();
   if (productId) loadProduct();
 });
+
+
+
 
 
 

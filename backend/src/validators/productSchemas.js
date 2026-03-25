@@ -55,5 +55,9 @@ export const updateProductSchema = Joi.object({
 // ✅ Review
 export const reviewSchema = Joi.object({
   rating: Joi.number().min(1).max(5).required(),
+  title: Joi.string().min(2).max(150).required(),
   comment: Joi.string().max(1000).required(),
+  image_url: Joi.string().allow(""),
 });
+
+

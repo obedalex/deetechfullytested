@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -115,9 +115,9 @@
               <h3 id="reviewFormTitle">Write a Review</h3>
               <p class="review-form-hint" id="reviewAuthHint">Sign in to leave a review.</p>
               <div id="myReviewPreview" class="my-review-preview hidden"></div>
-              <form id="reviewForm" class="review-form hidden">
+              <form id="reviewForm" class="review-form hidden" enctype="multipart/form-data">
                 <div class="review-form-row">
-                  <label>Rating</label>
+                  <label>Rating *</label>
                   <input type="hidden" id="reviewRating" name="rating" value="" required>
                   <div id="reviewStarsInput" class="review-stars-input" role="radiogroup" aria-label="Choose rating">
                     <button type="button" class="review-star-btn" data-value="1" aria-label="1 star">&#9733;</button>
@@ -129,12 +129,28 @@
                   <small id="reviewRatingText" class="review-rating-text">Select rating</small>
                 </div>
                 <div class="review-form-row">
-                  <label for="reviewComment">Your Review</label>
-                  <textarea id="reviewComment" name="comment" rows="4" maxlength="1000" placeholder="Share your experience with this product..." required></textarea>
+                  <label for="reviewTitle">Title *</label>
+                  <input id="reviewTitle" name="title" type="text" maxlength="150" placeholder="Title" required>
+                </div>
+                <div class="review-form-row review-image-row">
+                  <label for="reviewImage">Image (optional)</label>
+                  <div class="review-image-picker" id="reviewImagePicker" role="button" tabindex="0" aria-label="Upload review image">
+                    <span class="review-image-icon" aria-hidden="true">&#128247;</span>
+                    <span class="review-image-text">Add photo</span>
+                    <input id="reviewImage" name="image" type="file" accept="image/*">
+                  </div>
+                  <div class="review-image-preview hidden" id="reviewImagePreviewWrap">
+                    <img id="reviewImagePreview" alt="Review image preview" width="120" height="120" loading="lazy" decoding="async">
+                    <button type="button" id="reviewImageRemoveBtn" class="review-image-remove">Remove</button>
+                  </div>
+                </div>
+                <div class="review-form-row">
+                  <label for="reviewComment">Comment *</label>
+                  <textarea id="reviewComment" name="comment" rows="7" maxlength="1000" placeholder="Comment" required></textarea>
                 </div>
                 <div class="review-form-actions">
                   <button type="submit" class="btn" id="reviewSubmitBtn">Submit Review</button>
-                  <button type="button" class="btn btn-outline hidden" id="reviewCancelEditBtn">Cancel Edit</button>
+                  <button type="button" class="btn btn-outline hidden" id="reviewCancelEditBtn">Cancel</button>
                 </div>
               </form>
             </div>
@@ -246,6 +262,13 @@
   <script src="assets/js/product.js?v=20260325-02"></script>
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 

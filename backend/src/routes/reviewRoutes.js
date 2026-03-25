@@ -11,6 +11,10 @@ import {
   moderateReview,
 } from "../controllers/reviewController.js";
 import { protect, admin } from "../middleware/authMiddleware.js";
+import asyncHandler from "../middleware/asyncHandler.js";
+import { upload } from "../middleware/uploadMiddleware.js";
+import { createRateLimiter } from "../middleware/rateLimitFactory.js";
+import { storeImageFile } from "../utils/mediaStorage.js";
 import { validateRequest } from "../middleware/validateMiddleware.js";
 import {
   addReviewSchema,
@@ -19,6 +23,12 @@ import {
 } from "../validators/reviewSchemas.js";
 
 const router = express.Router();
+
+const reviewUploadLimiter = createRateLimiter({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: { message: "Too many review image uploads. Please try again later." },
+});
 
 /**
  * @route   GET /api/reviews
@@ -41,6 +51,26 @@ router.get("/product/:productId", getProductReviews);
  * @access  Private
  */
 router.get("/my/:productId", protect, getMyProductReview);
+
+/**
+ * @route   POST /api/reviews/upload
+ * @desc    Upload review image
+ * @access  Private
+ */
+router.post(
+  "/upload",
+  protect,
+  reviewUploadLimiter,
+  upload.single("image"),
+  asyncHandler(async (req, res) => {
+    if (!req.file) {
+      res.status(400);
+      throw new Error("Review image is required");
+    }
+    const stored = await storeImageFile(req.file, "deetech/reviews");
+    res.status(201).json({ imageUrl: stored.url, storage: stored.storage });
+  })
+);
 
 /**
  * @route   POST /api/reviews/:productId

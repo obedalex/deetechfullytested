@@ -970,7 +970,86 @@
 
   .related .grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
+    gap: 0.85rem;
+  }
+
+  .related .product-card {
+    border-radius: 14px;
+    border: 1px solid rgba(15, 23, 42, 0.06);
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
+    overflow: hidden;
+  }
+
+  .related .product-media a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 1 / 0.9;
+    padding: 0;
+    border-radius: 0;
+  }
+
+  .related .product-card img {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: auto;
+    object-fit: cover;
+  }
+
+  .related .product-info {
+    padding: 0.55rem 0.7rem 0.7rem;
+    gap: 0.18rem;
+  }
+
+  .related .product-name {
+    font-size: 0.72rem;
+    line-height: 1.22;
+    font-weight: 500;
+    min-height: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 0.02rem;
+  }
+
+  .related .product-desc {
+    display: none;
+  }
+
+  .related .product-price {
+    font-size: 0.82rem;
+    margin-top: 0.15rem;
+  }
+
+  .related .product-stock {
+    font-size: 0.72rem;
+    margin-top: 0.1rem;
+  }
+
+  .related .card-actions {
+    margin-top: 0.4rem;
+    gap: 0.4rem;
+    padding: 0 0.7rem 0.7rem;
+  }
+
+  .related .card-actions .related-add-btn {
+    padding: 0.72rem 0.7rem;
+    font-size: 0.74rem;
+    border-radius: 999px;
+    box-shadow: 0 8px 18px rgba(47, 143, 220, 0.28);
+  }
+
+  .related .card-actions .view-details-link {
+    width: 100%;
+    min-height: 38px;
+    font-size: 0.74rem;
+    border-radius: 999px;
+  }
+
+  .related .product-card:hover {
+    transform: none;
+    box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08);
   }
 
   .reviews-header {
@@ -997,19 +1076,138 @@
     font-size: 0.92rem;
     padding: 10px 12px 11px;
   }
+}
+/* Review UI refresh */
+.review-form-wrap {
+  border: 1px solid #dbe7f5;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px;
+}
 
-  .related .product-card h3 {
-    font-size: 0.86rem;
-    margin: 8px 8px 4px;
+.review-form-row input[type="text"],
+.review-form-row textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 11px 12px;
+  font-size: 1rem;
+  color: #0f172a;
+  background: #ffffff;
+}
+
+.review-form-row input[type="text"]:focus,
+.review-form-row textarea:focus {
+  outline: none;
+  border-color: var(--product-primary);
+  box-shadow: 0 0 0 3px rgba(47, 143, 220, 0.12);
+}
+
+.review-image-row {
+  gap: 10px;
+}
+
+.review-image-picker {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: #f8fafc;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  color: #334155;
+}
+
+.review-image-picker.has-image {
+  border-color: #93c5fd;
+  background: #eff6ff;
+}
+
+.review-image-picker input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.review-image-icon {
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.review-image-text {
+  font-size: 0.76rem;
+  font-weight: 600;
+}
+
+.review-image-preview {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.review-image-preview img,
+.review-image,
+.my-review-image {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #dbe7f5;
+  background: #f8fafc;
+}
+
+.review-image-remove {
+  border: 1px solid #dbe7f5;
+  background: #ffffff;
+  color: #334155;
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review-title,
+.my-review-title {
+  margin: 0 0 6px;
+  color: #0f172a;
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.review-form-actions {
+  margin-top: 4px;
+}
+
+#reviewSubmitBtn,
+#reviewCancelEditBtn {
+  min-width: 150px;
+}
+
+@media (max-width: 768px) {
+  .review-image-picker {
+    width: 84px;
+    height: 84px;
   }
 
-  .related .product-card p {
-    margin: 0 8px 8px;
-    font-size: 0.86rem;
+  .review-image-preview img,
+  .review-image,
+  .my-review-image {
+    width: 96px;
+    height: 96px;
   }
 
-  .related .card-actions {
-    grid-template-columns: 1fr;
-    padding: 0 8px 8px;
+  #reviewSubmitBtn,
+  #reviewCancelEditBtn {
+    width: 100%;
+    min-width: 0;
   }
 }
+
+

@@ -313,7 +313,7 @@ export const deleteProduct = asyncHandler(async (req, res) => {
 
 // @desc    Add review
 export const addReview = asyncHandler(async (req, res) => {
-  const { rating, comment } = req.body;
+  const { rating, title, comment, image_url } = req.body;
   const product = await Product.findById(req.params.id);
 
   if (!product) {
@@ -335,7 +335,9 @@ export const addReview = asyncHandler(async (req, res) => {
     user: req.user._id,
     product: product._id,
     rating: Number(rating),
+    title: String(title || "").trim(),
     comment,
+    image_url: String(image_url || "").trim(),
   });
 
   product.reviews.push(review._id);
@@ -343,4 +345,6 @@ export const addReview = asyncHandler(async (req, res) => {
 
   res.status(201).json(review);
 });
+
+
 

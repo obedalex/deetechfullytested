@@ -12,7 +12,7 @@ const reviewPopulate = [
 // @route   POST /api/reviews/:productId
 // @access  Private
 export const addReview = asyncHandler(async (req, res) => {
-  const { rating, comment } = req.body;
+  const { rating, title, comment, image_url } = req.body;
   const product = await Product.findById(req.params.productId);
 
   if (!product) {
@@ -35,7 +35,9 @@ export const addReview = asyncHandler(async (req, res) => {
     user: req.user._id,
     product: product._id,
     rating: Number(rating),
+    title: String(title || "").trim(),
     comment,
+    image_url: String(image_url || "").trim(),
     approved: true,
   });
 
@@ -50,7 +52,7 @@ export const addReview = asyncHandler(async (req, res) => {
 // @route   PUT /api/reviews/:id
 // @access  Private (owner)
 export const updateReview = asyncHandler(async (req, res) => {
-  const { rating, comment } = req.body;
+  const { rating, title, comment, image_url } = req.body;
   const review = await Review.findById(req.params.id);
 
   if (!review) {
@@ -64,7 +66,9 @@ export const updateReview = asyncHandler(async (req, res) => {
   }
 
   review.rating = rating ?? review.rating;
+  review.title = title !== undefined ? String(title || "").trim() : review.title;
   review.comment = comment ?? review.comment;
+  review.image_url = image_url !== undefined ? String(image_url || "").trim() : review.image_url;
   review.approved = true;
   review.moderatedAt = null;
 
@@ -157,6 +161,7 @@ export const getAllReviews = asyncHandler(async (req, res) => {
   const filtered = q
     ? reviews.filter((r) => {
         const text = [
+          r.title,
           r.comment,
           r?.user?.name,
           r?.user?.email,
@@ -190,3 +195,5 @@ export const moderateReview = asyncHandler(async (req, res) => {
   const populated = await Review.findById(updated._id).populate(reviewPopulate);
   res.json(populated);
 });
+
+

@@ -10,7 +10,9 @@ const reviewSchema = new mongoose.Schema(
       required: true,
     },
     rating: { type: Number, required: true, min: 1, max: 5 },
+    title: { type: String, trim: true, default: "", maxlength: 150 },
     comment: { type: String, required: true },
+    image_url: { type: String, trim: true, default: "" },
     approved: { type: Boolean, default: true },
     moderatedAt: { type: Date, default: null },
   },
@@ -19,3 +21,5 @@ const reviewSchema = new mongoose.Schema(
 
 const Review = mongoose.model("Review", reviewSchema);
 export default Review;
+
+
