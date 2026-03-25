@@ -58,9 +58,15 @@
     if (slides.length > 1) {
       const controls = document.createElement("div");
       controls.className = "hero-controls";
+      const dotsMarkup = slides
+        .map(
+          (_, i) =>
+            `<button type="button" class="hero-dot ${i === index ? "active" : ""}" data-index="${i}" aria-label="Go to banner ${i + 1}"></button>`
+        )
+        .join("");
       controls.innerHTML = `
         <button type="button" class="hero-arrow hero-arrow-prev" aria-label="Previous banner">&#8249;</button>
-        <span class="hero-indicator">${index + 1}/${slides.length}</span>
+        <div class="hero-dots" role="tablist" aria-label="Banner navigation">${dotsMarkup}</div>
         <button type="button" class="hero-arrow hero-arrow-next" aria-label="Next banner">&#8250;</button>
       `;
       host.appendChild(controls);
@@ -79,6 +85,18 @@
         currentIndex = currentIndex === slides.length - 1 ? 0 : currentIndex + 1;
         renderBanner(currentIndex);
         startAutoSlide();
+      });
+
+      controls.querySelectorAll(".hero-dot").forEach((dot) => {
+        dot.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const target = Number(dot.dataset.index);
+          if (!Number.isInteger(target) || target < 0 || target >= slides.length) return;
+          currentIndex = target;
+          renderBanner(currentIndex);
+          startAutoSlide();
+        });
       });
     }
   }
@@ -173,6 +191,7 @@
 
   loadBanner();
 })();
+
 
 
 
