@@ -392,7 +392,7 @@
           <div class="product-stock ${stockClass}">${stockLabel}</div>
           <div class="product-actions">
             <button class="add-to-cart" data-id="${prod._id}" ${stock > 0 ? "" : "disabled"}>${stock > 0 ? "Add to Cart" : "Out of Stock"}</button>
-            <a class="buy-now" href="checkout.html" data-id="${prod._id}">Buy Now</a>
+            <a class="buy-now" href="product.html?id=${encodeURIComponent(prod._id)}">View Details</a>
           </div>
         </div>
       </article>
@@ -533,7 +533,7 @@
       });
 
       initAddToCartButtons(container);
-      initBuyNowButtons(container);
+
     } catch (err) {
       console.error("Error loading home sections:", err);
       container.innerHTML = "<p>Failed to load products.</p>";
@@ -558,6 +558,7 @@
     });
   });
 })();
+
 
 
 
