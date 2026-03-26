@@ -283,9 +283,9 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
         height: 58px;
         border-radius: 50%;
         border: 0;
-        background: #ff4f7a;
+        background: #2563eb;
         color: #fff;
-        box-shadow: 0 14px 32px rgba(255, 79, 122, 0.35);
+        box-shadow: 0 14px 32px rgba(37, 99, 235, 0.35);
         cursor: pointer;
         display: grid;
         place-items: center;
@@ -308,7 +308,7 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
       }
       .deetech-chat-head {
         position: relative;
-        background: #ff4f7a;
+        background: #2563eb;
         color: #fff;
         padding: 14px 14px 12px;
       }
@@ -372,7 +372,7 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
         font-size: 13px;
         line-height: 1.35;
       }
-      .deetech-chat-msg.user { background: #ffebf1; margin-left: auto; }
+      .deetech-chat-msg.user { background: #dbeafe; margin-left: auto; }
       .deetech-chat-msg.admin { background: #eef2ff; margin-right: auto; }
       .deetech-chat-meta {
         display: block;
@@ -445,8 +445,8 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
     wrap.innerHTML = `
       <div class="deetech-chat-panel" id="deetechChatPanel" aria-hidden="true">
         <div class="deetech-chat-head">
-          <h4>Hi there &#128075;</h4>
-          <p>Welcome to our website. Ask us anything &#127881;</p>
+          <h4>Hi there</h4>
+          <p>Welcome to our website. Ask us anything</p>
           <button class="deetech-chat-close" id="deetechChatClose" type="button" aria-label="Close chat">&times;</button>
         </div>
         <div class="deetech-chat-body">
