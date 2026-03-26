@@ -392,7 +392,7 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
         border: 1px solid #d5d7de;
         border-radius: 10px;
         padding: 9px 10px;
-        font-size: 13px;
+        font-size: 16px;
         color: #111827;
         background: #fff;
       }
@@ -431,7 +431,7 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
         .deetech-chat-input,
         .deetech-chat-textarea {
           padding: 8px 9px;
-          font-size: 12px;
+          font-size: 16px;
         }
         .deetech-chat-actions { flex-direction: column; gap: 6px; }
         .deetech-chat-send,
@@ -445,9 +445,9 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
     wrap.innerHTML = `
       <div class="deetech-chat-panel" id="deetechChatPanel" aria-hidden="true">
         <div class="deetech-chat-head">
-          <h4>Hi there 👋</h4>
-          <p>Welcome to our website. Ask us anything 🎉</p>
-          <button class="deetech-chat-close" id="deetechChatClose" type="button" aria-label="Close chat">×</button>
+          <h4>Hi there &#128075;</h4>
+          <p>Welcome to our website. Ask us anything &#127881;</p>
+          <button class="deetech-chat-close" id="deetechChatClose" type="button" aria-label="Close chat">&times;</button>
         </div>
         <div class="deetech-chat-body">
           <div class="deetech-chat-thread" id="deetechChatThread">
@@ -511,7 +511,7 @@ if (typeof window !== "undefined" && typeof document !== "undefined") {
       row.className = `deetech-chat-msg ${sender === "admin" ? "admin" : "user"}`;
       row.innerHTML = `
         ${escapeHtml(text)}
-        <span class="deetech-chat-meta">${sender === "admin" ? "Support" : "You"}${createdAt ? ` • ${escapeHtml(formatDate(createdAt))}` : ""}</span>
+        <span class="deetech-chat-meta">${sender === "admin" ? "Support" : "You"}${createdAt ? ` &bull; ${escapeHtml(formatDate(createdAt))}` : ""}</span>
       `;
       thread.appendChild(row);
       thread.scrollTop = thread.scrollHeight;

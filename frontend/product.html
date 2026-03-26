@@ -168,6 +168,16 @@
     </section>
   </main>
 
+  <div id="productImageLightbox" class="product-lightbox hidden" aria-hidden="true" role="dialog" aria-label="Product image zoom view">
+    <button type="button" class="product-lightbox-close" id="productLightboxClose" aria-label="Close zoom view">&times;</button>
+    <button type="button" class="product-lightbox-nav product-lightbox-prev" id="productLightboxPrev" aria-label="Previous image">&#8249;</button>
+    <div class="product-lightbox-stage" id="productLightboxStage">
+      <img id="productLightboxImage" src="" alt="Zoomed product image" loading="eager" decoding="async" />
+      <p class="product-lightbox-hint">Tap image to zoom</p>
+    </div>
+    <button type="button" class="product-lightbox-nav product-lightbox-next" id="productLightboxNext" aria-label="Next image">&#8250;</button>
+  </div>
+
   <!-- Footer -->
     <footer class="footer">
     <h2 class="sr-only">Footer Navigation</h2>
@@ -252,6 +262,6 @@
   <script src="assets/js/auth.js"></script>
   <script src="assets/js/cart.js"></script>
   <script src="assets/js/main.js"></script>
-  <script src="assets/js/product.js?v=20260325-03"></script>
+  <script src="assets/js/product.js?v=20260325-04"></script>
 </body>
 </html>
