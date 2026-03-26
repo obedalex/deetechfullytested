@@ -17,35 +17,9 @@
     /[0-9]/.test(pwd) &&
     /[^A-Za-z0-9]/.test(pwd);
 
-  const addToggleVisibility = (inputId) => {
-    const input = $id(inputId);
-    if (!input) return;
-
-    const wrapper = document.createElement("div");
-    wrapper.style.display = "flex";
-    wrapper.style.alignItems = "center";
-
-    input.parentNode.insertBefore(wrapper, input);
-    wrapper.appendChild(input);
-
-    const toggleBtn = document.createElement("span");
-    toggleBtn.textContent = "👁️";
-    toggleBtn.style.cursor = "pointer";
-    toggleBtn.style.marginLeft = "8px";
-    toggleBtn.title = "Show/Hide Password";
-
-    wrapper.appendChild(toggleBtn);
-
-    toggleBtn.addEventListener("click", () => {
-      input.type = input.type === "password" ? "text" : "password";
-    });
-  };
-
   document.addEventListener("DOMContentLoaded", () => {
     const form = $id("changePasswordForm");
     if (!form) return;
-
-    ["currentPassword", "newPassword", "confirmPassword"].forEach(addToggleVisibility);
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -77,7 +51,6 @@
       }
 
       try {
-        // Verify current password via login
         const verifyRes = await fetch(LOGIN_URL, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -89,7 +62,6 @@
           return;
         }
 
-        // Update profile with new password
         const res = await fetch(PROFILE_URL, {
           method: "PUT",
           headers: {

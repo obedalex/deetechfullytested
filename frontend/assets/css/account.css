@@ -1154,3 +1154,30 @@
     padding: clamp(1rem, 3vw, 1.5rem);
   }
 }
+
+.account-profile-form .password-field {
+  position: relative;
+}
+
+.account-profile-form .password-field input {
+  padding-right: 4.6rem;
+}
+
+.account-profile-form .password-toggle {
+  position: absolute;
+  right: 0.6rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid #c5d2e2;
+  background: #fff;
+  color: #2f8fdc;
+  border-radius: 8px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.account-profile-form .password-toggle:hover {
+  background: #f0f7ff;
+}
