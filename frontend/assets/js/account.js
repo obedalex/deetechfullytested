@@ -609,11 +609,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   const tabFromUrl = new URLSearchParams(window.location.search).get("tab");
-  if (tabFromUrl === "reviews") activateTab("reviews");
-  else if (tabFromUrl === "affiliate") activateTab("affiliate");
-  else if (tabFromUrl === "profile") activateTab("profile");
-  else if (isMobileAccountView()) showAccountMenu();
-  else activateTab("profile");
+  if (isMobileAccountView()) {
+    showAccountMenu();
+  } else if (tabFromUrl === "reviews") {
+    activateTab("reviews");
+  } else if (tabFromUrl === "affiliate") {
+    activateTab("affiliate");
+  } else {
+    activateTab("profile");
+  }
 
   window.addEventListener("resize", () => {
     if (!isMobileAccountView()) {
