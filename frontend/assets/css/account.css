@@ -2356,3 +2356,42 @@ body.account-page-leaving .account-page {
   opacity: 1;
 }
 
+
+/* ===== Profile Input Reliability Patch ===== */
+#accountProfileForm .account-form-group input,
+#accountProfileForm .account-form-group select {
+  width: 100%;
+  min-height: 50px;
+  border: 1px solid #cfd9ea;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 1rem;
+  padding: 0 1rem;
+  pointer-events: auto;
+  opacity: 1;
+}
+
+#accountProfileForm .account-form-group input:focus,
+#accountProfileForm .account-form-group select:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+#accountProfileForm .account-form-group input:hover,
+#accountProfileForm .account-form-group select:hover {
+  border-color: #cfd9ea;
+  box-shadow: none;
+  transform: none;
+}
+
+#accountProfileForm:not(.account-editing) .account-form-group input,
+#accountProfileForm:not(.account-editing) .account-form-group select {
+  border: 1px solid #cfd9ea;
+  background: #ffffff;
+  min-height: 50px;
+  padding: 0 1rem;
+  pointer-events: auto;
+  color: #334155;
+}
