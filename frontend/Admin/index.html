@@ -13,7 +13,7 @@
 <body>
   <div class="admin-shell dashboard-page">
     <div class="admin-header">
-      <h1>Admin Dashboard</h1>
+      <h1>Dashboard</h1>
       <div class="admin-actions">
         <a class="btn-admin btn-ghost" href="../index.html">View Site</a>
       </div>
@@ -31,8 +31,40 @@
       <a href="discounts.html">Discounts</a>
     </nav>
 
-    <section class="admin-card">
-      <div class="grid-3" id="statsGrid"></div>
+    <section class="dashboard-overview" id="statsGrid" aria-label="Dashboard overview metrics"></section>
+
+    <section class="dashboard-main-grid" aria-label="Dashboard analytics">
+      <article class="admin-card dashboard-card">
+        <div class="dashboard-card-head">
+          <h3>Order Status Overview</h3>
+          <span class="dashboard-subtle" id="ordersTotalMeta">0 Orders</span>
+        </div>
+        <div class="status-bars" id="orderStatusBars"></div>
+      </article>
+
+      <article class="admin-card dashboard-card">
+        <div class="dashboard-card-head">
+          <h3>Section Health</h3>
+          <span class="dashboard-subtle" id="healthMeta">Live</span>
+        </div>
+        <div class="health-grid" id="healthGrid"></div>
+      </article>
+
+      <article class="admin-card dashboard-card span-2">
+        <div class="dashboard-card-head">
+          <h3>Quick Links</h3>
+          <span class="dashboard-subtle">Jump to admin sections</span>
+        </div>
+        <div class="quick-links" id="quickLinks"></div>
+      </article>
+
+      <article class="admin-card dashboard-card span-2">
+        <div class="dashboard-card-head">
+          <h3>Recent Activity</h3>
+          <span class="dashboard-subtle" id="activityMeta">Latest updates</span>
+        </div>
+        <div id="recentActivity" class="activity-list"></div>
+      </article>
     </section>
   </div>
 
@@ -44,5 +76,3 @@
   <script src="assets/js/dashboard.js"></script>
 </body>
 </html>
-
-
