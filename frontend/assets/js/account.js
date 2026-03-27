@@ -296,8 +296,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (!reviewsList) return;
     if (!Array.isArray(reviewsCache) || !reviewsCache.length) {
       reviewsList.innerHTML = `
-        <div class="account-reviews-note">
-          You have not submitted any reviews yet. Reviews will appear here after you post them on product pages.
+        <div class="account-reviews-empty" role="status" aria-live="polite">
+          <div class="account-reviews-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false">
+              <path d="M32 6 40.2 22.6 58 25.2 45 37.8 48.1 55.6 32 47.2 15.9 55.6 19 37.8 6 25.2l17.8-2.6z"></path>
+            </svg>
+          </div>
+          <h3>No reviews added yet</h3>
+          <p>Your posted product reviews will appear here.</p>
         </div>
       `;
       hideReviewEditor();
@@ -848,6 +854,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadAccountInfo();
 });
+
+
 
 
 

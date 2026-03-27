@@ -172,3 +172,42 @@
     border-radius: 999px;
   }
 }
+
+.wishlist-empty-rich {
+  display: grid;
+  place-items: center;
+  gap: 10px;
+  min-height: 340px;
+  border: none;
+  background: transparent;
+  color: #1f2937;
+  text-align: center;
+}
+
+.wishlist-empty-icon {
+  width: clamp(92px, 13vw, 130px);
+  height: clamp(92px, 13vw, 130px);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.85;
+}
+
+.wishlist-empty-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: #c7cbd8;
+}
+
+.wishlist-empty-rich h3 {
+  margin: 0;
+  font-size: clamp(1.22rem, 2.2vw, 1.9rem);
+  color: #111827;
+  font-weight: 600;
+}
+
+.wishlist-empty-rich p {
+  margin: 0;
+  color: #64748b;
+  font-size: 0.96rem;
+}

@@ -109,9 +109,14 @@
 
     if (!Array.isArray(data) || data.length === 0) {
       grid.innerHTML = `
-        <div class="wishlist-empty">
-          <h3>Your wishlist is empty</h3>
-          <p>Browse products and tap the heart icon to save your favorites.</p>
+        <div class="wishlist-empty wishlist-empty-rich" role="status" aria-live="polite">
+          <div class="wishlist-empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 64 64" focusable="false">
+              <path d="M32 57 28.5 53.9C16 42.6 8 35.4 8 25.8 8 17.9 14.1 12 22 12c4.5 0 8.8 2.1 11 5.5C35.2 14.1 39.5 12 44 12c7.9 0 14 5.9 14 13.8 0 9.6-8 16.8-20.5 28.1z"></path>
+            </svg>
+          </div>
+          <h3>No products were added to the wishlist page.</h3>
+          <p>Browse products and tap the wishlist icon to save your favorites.</p>
         </div>
       `;
       return;
@@ -173,5 +178,6 @@
 
   loadWishlist().catch((e) => console.error(e));
 })();
+
 
 
