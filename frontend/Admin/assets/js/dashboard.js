@@ -320,7 +320,7 @@
       .forEach((o) => {
         activity.push({
           title: `Order #${shortId(o._id)} - ${text(o.orderStatus || "pending").toUpperCase()}`,
-          meta: `${text(o.user?.name || o.guestName || "Guest")} • ${formatDate(o.updatedAt || o.createdAt)}`,
+          meta: `${text(o.user?.name || o.guestName || "Guest")} | ${formatDate(o.updatedAt || o.createdAt)}`,
         });
       });
 
@@ -331,13 +331,13 @@
       .forEach((m) => {
         activity.push({
           title: `Support: ${text(m.subject || "New Message")}`,
-          meta: `${text(m.name || m.user?.name || "User")} • ${formatDate(m.updatedAt || m.createdAt)}`,
+          meta: `${text(m.name || m.user?.name || "User")} | ${formatDate(m.updatedAt || m.createdAt)}`,
         });
       });
 
     activity.sort((a, b) => {
-      const da = Date.parse(a.meta.split("•").pop() || "") || 0;
-      const db = Date.parse(b.meta.split("•").pop() || "") || 0;
+      const da = Date.parse(a.meta.split("|").pop() || "") || 0;
+      const db = Date.parse(b.meta.split("|").pop() || "") || 0;
       return db - da;
     });
 
@@ -354,3 +354,5 @@
     if (toast) toast("Failed to load dashboard data", "error");
   });
 })();
+
+

@@ -146,6 +146,19 @@
       nav.prepend(brand);
     }
 
+    if (!nav.querySelector("a.admin-view-site-link")) {
+      const viewSiteLink = document.createElement("a");
+      viewSiteLink.className = "admin-view-site-link";
+      viewSiteLink.href = "../index.html";
+      viewSiteLink.target = "_blank";
+      viewSiteLink.rel = "noopener noreferrer";
+      viewSiteLink.textContent = "View Site";
+      nav.appendChild(viewSiteLink);
+    }
+
+    const headerActions = header.querySelector(".admin-actions");
+    if (headerActions) headerActions.remove();
+
     if (!header.querySelector(".admin-nav-toggle")) {
       const toggleBtn = document.createElement("button");
       toggleBtn.type = "button";
@@ -277,4 +290,9 @@
   setActiveAdminNav();
   enhanceAdminShell();
 })();
+
+
+
+
+
 
