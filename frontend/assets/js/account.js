@@ -20,13 +20,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   const profileSection = document.getElementById("accountProfileSection");
   const reviewsSection = document.getElementById("accountReviewsSection");
   const affiliateSection = document.getElementById("accountAffiliateSection");
+  const accountContent = document.querySelector(".account-content");
+  const sidebar = document.querySelector(".account-sidebar");
+  const backFromReviewsBtn = document.getElementById("accountBackFromReviews");
+  const backFromAffiliateBtn = document.getElementById("accountBackFromAffiliate");
+  const backFromProfileBtn = document.getElementById("accountBackFromProfile");
   const reviewsList = document.getElementById("accountReviewsList");
 
   const affiliateJoinCard = document.getElementById("accountAffiliateJoinCard");
   const affiliateDashboardCard = document.getElementById("accountAffiliateDashboardCard");
   const affiliateJoinBtn = document.getElementById("accountAffiliateJoinBtn");
   const affiliateJoinMessage = document.getElementById("accountAffiliateJoinMessage");
-  const affiliateCopyCodeBtn = document.getElementById("accountAffiliateCopyCodeBtn");
   const affiliateCodeEl = document.getElementById("accountAffiliateCode");
   const affiliateTierEl = document.getElementById("accountAffiliateTier");
   const affiliateTotalReferralsEl = document.getElementById("accountAffiliateTotalReferrals");
@@ -49,6 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   let reviewsCache = [];
   let selectedRating = 0;
   let currentUserId = "";
+  let currentAffiliateCode = "";
 
   const ratingLabelMap = {
     1: "1 - Poor",
@@ -69,7 +74,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   function starsText(value) {
     const rating = Math.max(0, Math.min(5, Number(value || 0)));
-    return `${"★".repeat(rating)}${"☆".repeat(5 - rating)}`;
+    return `${"\u2605".repeat(rating)}${"\u2606".repeat(5 - rating)}`;
   }
 
   function formatDate(value) {
@@ -91,6 +96,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     messageEl.style.color = type === "error" ? "#ef4444" : "#1e3a8a";
   }
 
+  function showAccountMenu() {
+    profileSection?.classList.add("account-hidden");
+    reviewsSection?.classList.add("account-hidden");
+    affiliateSection?.classList.add("account-hidden");
+
+    tabProfileBtn?.classList.remove("account-active");
+    tabReviewsBtn?.classList.remove("account-active");
+    tabAffiliateBtn?.classList.remove("account-active");
+
+    hideReviewEditor();
+    accountContent?.classList.add("account-hidden");
+    sidebar?.classList.remove("account-hidden");
+    sidebar?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
   function activateTab(tab) {
     profileSection?.classList.add("account-hidden");
     reviewsSection?.classList.add("account-hidden");
@@ -100,10 +120,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     tabReviewsBtn?.classList.remove("account-active");
     tabAffiliateBtn?.classList.remove("account-active");
 
+    sidebar?.classList.add("account-hidden");
+    accountContent?.classList.remove("account-hidden");
+
     if (tab === "reviews") {
       reviewsSection?.classList.remove("account-hidden");
       tabReviewsBtn?.classList.add("account-active");
       loadMyReviews();
+      reviewsSection?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
@@ -112,12 +136,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       tabAffiliateBtn?.classList.add("account-active");
       loadAffiliateSummary();
       hideReviewEditor();
+      affiliateSection?.scrollIntoView({ behavior: "smooth", block: "start" });
       return;
     }
 
     profileSection?.classList.remove("account-hidden");
     tabProfileBtn?.classList.add("account-active");
     hideReviewEditor();
+    profileSection?.scrollIntoView({ behavior: "smooth", block: "start" });
   }
 
   function setEditorRating(value) {
@@ -171,7 +197,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             <div class="account-review-card-head">
               <div>
                 <div class="account-review-product">${escapeHtml(productName)}</div>
-                <div class="account-review-meta">${escapeHtml(product.category || "General")} • Updated ${escapeHtml(formatDate(review.updatedAt || review.createdAt))}</div>
+                <div class="account-review-meta">${escapeHtml(product.category || "General")} &bull; Updated ${escapeHtml(formatDate(review.updatedAt || review.createdAt))}</div>
               </div>
               <div class="account-review-stars-text">${starsText(review.rating)} (${Number(review.rating || 0)}/5)</div>
             </div>
@@ -410,7 +436,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     currentAffiliateCode = String(affiliate.code || "").trim();
     if (affiliateCodeEl) affiliateCodeEl.textContent = currentAffiliateCode || "-";
-    if (affiliateCopyCodeBtn) affiliateCopyCodeBtn.dataset.code = currentAffiliateCode;
     if (affiliateTierEl) {
       const tier = String(affiliate.tier || "starter");
       affiliateTierEl.textContent = `${tier.charAt(0).toUpperCase()}${tier.slice(1)}`;
@@ -554,6 +579,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   tabProfileBtn?.addEventListener("click", () => activateTab("profile"));
   tabReviewsBtn?.addEventListener("click", () => activateTab("reviews"));
   tabAffiliateBtn?.addEventListener("click", () => activateTab("affiliate"));
+
+  backFromProfileBtn?.addEventListener("click", showAccountMenu);
+  backFromReviewsBtn?.addEventListener("click", showAccountMenu);
+  backFromAffiliateBtn?.addEventListener("click", showAccountMenu);
+
   logoutBtn?.addEventListener("click", handleLogout);
   form?.addEventListener("submit", handleProfileSave);
   reviewSaveBtn?.addEventListener("click", saveReviewUpdate);
@@ -565,7 +595,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tabFromUrl = new URLSearchParams(window.location.search).get("tab");
   if (tabFromUrl === "reviews") activateTab("reviews");
   else if (tabFromUrl === "affiliate") activateTab("affiliate");
-  else activateTab("profile");
+  else if (tabFromUrl === "profile") activateTab("profile");
+  else showAccountMenu();
 
   loadAccountInfo();
 });
