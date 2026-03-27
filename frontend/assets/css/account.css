@@ -1645,8 +1645,8 @@
   color: #334155;
 }
 
-.account-profile-form:not(.account-editing) .account-form-group input,
-.account-profile-form:not(.account-editing) .account-form-group select {
+.account-profile-form#accountProfileForm:not(.account-editing) .account-form-group input,
+.account-profile-form#accountProfileForm:not(.account-editing) .account-form-group select {
   border: none;
   background: transparent;
   height: auto;
@@ -1656,7 +1656,7 @@
   pointer-events: none;
 }
 
-.account-profile-form:not(.account-editing) .account-form-group label {
+.account-profile-form#accountProfileForm:not(.account-editing) .account-form-group label {
   font-weight: 700;
 }
 
@@ -2347,5 +2347,12 @@ body.account-page-leaving .account-page {
   margin: 0;
   color: #64748b;
   font-size: 0.95rem;
+}
+
+
+#changePasswordForm .account-form-group input,
+#changePasswordForm .account-form-group select {
+  pointer-events: auto;
+  opacity: 1;
 }
 
