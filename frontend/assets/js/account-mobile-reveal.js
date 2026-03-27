@@ -20,13 +20,62 @@
     }
   }
 
+  function ensureMobileBackButton() {
+    if (!isMobile() || !isDedicatedAccountSubpage()) return document.querySelector("[data-account-back]");
+
+    const header = document.querySelector(".account-header");
+    let backBtn = document.querySelector("[data-account-back]");
+    let container = document.querySelector(".account-mobile-back-nav");
+
+    if (!backBtn) {
+      if (!container) {
+        container = document.createElement("div");
+      }
+      container.className = "account-view-nav account-header-nav account-mobile-back-nav";
+
+      backBtn = document.createElement("button");
+      backBtn.type = "button";
+      backBtn.className = "btn btn-outline account-back-btn";
+      backBtn.setAttribute("data-account-back", "");
+      backBtn.textContent = "Back to Account Menu";
+
+      container.innerHTML = "";
+      container.appendChild(backBtn);
+    } else if (!container) {
+      container = backBtn.closest(".account-view-nav") || backBtn.parentElement;
+    }
+
+    if (container) {
+      container.classList.add("account-view-nav", "account-header-nav", "account-mobile-back-nav");
+      container.style.display = "flex";
+      container.style.marginTop = "0.45rem";
+      container.style.marginBottom = "0.7rem";
+      container.style.position = "relative";
+      container.style.zIndex = "2";
+
+      if (header && header.nextElementSibling !== container) {
+        header.insertAdjacentElement("afterend", container);
+      }
+    }
+
+    backBtn.style.display = "inline-flex";
+    backBtn.style.visibility = "visible";
+    backBtn.style.opacity = "1";
+
+    return backBtn;
+  }
+
   function init() {
     const sidebar = document.querySelector(".account-layout .account-sidebar");
     const content = document.querySelector(".account-layout .account-content");
     if (!sidebar || !content) return;
 
     const openCurrentBtn = document.querySelector("[data-account-open-current]");
-    const backBtn = document.querySelector("[data-account-back]");
+    let backBtn = document.querySelector("[data-account-back]");
+
+    if (isDedicatedAccountSubpage()) {
+      backBtn = ensureMobileBackButton() || backBtn;
+    }
 
     const showMenu = () => {
       if (isDedicatedAccountSubpage()) {
@@ -59,15 +108,19 @@
       if (!el) return;
       let touchHandled = false;
 
-      el.addEventListener("touchend", (event) => {
-        touchHandled = true;
-        event.preventDefault();
-        event.stopPropagation();
-        handler();
-        setTimeout(() => {
-          touchHandled = false;
-        }, 350);
-      }, { passive: false });
+      el.addEventListener(
+        "touchend",
+        (event) => {
+          touchHandled = true;
+          event.preventDefault();
+          event.stopPropagation();
+          handler();
+          setTimeout(() => {
+            touchHandled = false;
+          }, 350);
+        },
+        { passive: false }
+      );
 
       el.addEventListener("click", (event) => {
         if (touchHandled) {
@@ -99,6 +152,8 @@
       if (!isMobile()) {
         sidebar.classList.remove("account-hidden");
         content.classList.remove("account-hidden");
+      } else if (isDedicatedAccountSubpage()) {
+        ensureMobileBackButton();
       }
     });
   }
