@@ -125,6 +125,24 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function showAccountMenu() {
+    updateAccountHeader("profile");
+
+    try {
+      const currentPath = String(window.location.pathname || "").toLowerCase();
+      if (currentPath.endsWith("/account.html") || currentPath.endsWith("account.html")) {
+        const url = new URL(window.location.href);
+        if (url.searchParams.has("tab") || url.hash) {
+          url.searchParams.delete("tab");
+          url.hash = "";
+          if (window.history && typeof window.history.replaceState === "function") {
+            window.history.replaceState({}, "", `${url.pathname}${url.search}`);
+          }
+        }
+      }
+    } catch {
+      // no-op: keep menu behavior even if URL normalization fails
+    }
+
     if (!isMobileAccountView()) {
       accountContent?.classList.remove("account-hidden");
       sidebar?.classList.remove("account-hidden");
