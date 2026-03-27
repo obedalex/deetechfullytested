@@ -4,22 +4,13 @@
     return typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches;
   }
 
-  let lastTapTs = 0;
-  function bindTapOnce(el, handler) {
-    if (!el) return;
-    const wrapped = (event) => {
-      const now = Date.now();
-      if (now - lastTapTs < 250) {
-        event.preventDefault();
-        return;
-      }
-      lastTapTs = now;
-      event.preventDefault();
-      event.stopPropagation();
-      handler();
-    };
-    el.addEventListener("pointerup", wrapped);
-    el.addEventListener("click", wrapped);
+  function isDedicatedAccountSubpage() {
+    try {
+      const path = String(window.location.pathname || "").toLowerCase();
+      return path.endsWith("/orders.html") || path.endsWith("/change-password.html") || path.endsWith("orders.html") || path.endsWith("change-password.html");
+    } catch {
+      return false;
+    }
   }
 
   function init() {
@@ -38,6 +29,7 @@
       }
       content.classList.add("account-hidden");
       sidebar.classList.remove("account-hidden");
+      window.scrollTo({ top: 0, behavior: "auto" });
     };
 
     const openContent = () => {
@@ -47,18 +39,47 @@
       } else {
         sidebar.classList.remove("account-hidden");
       }
+      window.scrollTo({ top: 0, behavior: "auto" });
     };
 
-    bindTapOnce(openCurrentBtn, openContent);
-    bindTapOnce(backBtn, showMenu);
+    const bindActivate = (el, handler) => {
+      if (!el) return;
+      let touchHandled = false;
+
+      el.addEventListener("touchend", (event) => {
+        touchHandled = true;
+        event.preventDefault();
+        event.stopPropagation();
+        handler();
+        setTimeout(() => {
+          touchHandled = false;
+        }, 350);
+      }, { passive: false });
+
+      el.addEventListener("click", (event) => {
+        if (touchHandled) {
+          event.preventDefault();
+          return;
+        }
+        event.preventDefault();
+        event.stopPropagation();
+        handler();
+      });
+    };
+
+    bindActivate(openCurrentBtn, openContent);
+    bindActivate(backBtn, showMenu);
 
     if (isMobile()) {
-      showMenu();
-      window.scrollTo({ top: 0, behavior: "auto" });
+      if (isDedicatedAccountSubpage()) {
+        openContent();
+      } else {
+        showMenu();
+      }
       requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" }));
     } else {
       openContent();
-      window.scrollTo({ top: 0, behavior: "auto" });
+      requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: "auto" }));
     }
 
     window.addEventListener("resize", () => {
