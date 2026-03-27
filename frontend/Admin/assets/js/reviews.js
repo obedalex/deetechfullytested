@@ -25,7 +25,7 @@
 
   function stars(rating) {
     const safe = Math.max(0, Math.min(5, Number(rating || 0)));
-    return `${"â˜…".repeat(safe)}${"â˜†".repeat(5 - safe)}`;
+    return `${"\u2605".repeat(safe)}${"\u2606".repeat(5 - safe)}`;
   }
 
   function fmtDate(value) {
@@ -79,7 +79,7 @@
           <div class="review-meta">
             <div class="review-user">${escapeHtml(review?.user?.name || "Unknown User")}</div>
             <div class="review-product">${escapeHtml(review?.product?.name || "Unknown Product")}</div>
-            <div class="review-sub">${escapeHtml(review?.user?.email || "-")} â€¢ ${escapeHtml(fmtDate(review.createdAt))}</div>
+            <div class="review-sub">${escapeHtml(review?.user?.email || "-")} \u2022 ${escapeHtml(fmtDate(review.createdAt))}</div>
           </div>
           <span class="review-status ${review.approved === false ? "rejected" : "approved"}">
             ${review.approved === false ? "Rejected" : "Approved"}
@@ -156,6 +156,7 @@
     toast?.("Failed to load reviews", "error");
   });
 })();
+
 
 
 
