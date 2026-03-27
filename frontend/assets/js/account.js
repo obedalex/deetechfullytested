@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const accountCrumbCurrent = document.getElementById("accountCrumbCurrent");
   const accountSidebarName = document.getElementById("accountSidebarName");
   const accountSidebarEmail = document.getElementById("accountSidebarEmail");
+  const mobileQuickLinks = Array.from(document.querySelectorAll(".account-mobile-quicknav a[data-mobile-tab]"));
   const form = document.getElementById("accountProfileForm");
   const messageEl = document.getElementById("accountProfileMessage");
   const logoutBtn = document.getElementById("accountLogoutBtn");
@@ -106,6 +107,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     return typeof window !== "undefined" && window.matchMedia("(max-width: 1023px)").matches;
   }
 
+
+  function setMobileQuickNav(tab) {
+    if (!mobileQuickLinks.length) return;
+    mobileQuickLinks.forEach((link) => {
+      link.classList.toggle("account-active", String(link.dataset.mobileTab || "") === String(tab || "profile"));
+    });
+  }
   function updateAccountHeader(tab) {
     if (!accountHeaderTitle || !accountHeaderSubtitle) return;
     const copy = {
@@ -126,6 +134,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     accountHeaderTitle.textContent = active.title;
     accountHeaderSubtitle.textContent = active.subtitle;
     if (accountCrumbCurrent) accountCrumbCurrent.textContent = active.title;
+    setMobileQuickNav(tab);
   }
 
   function showAccountMenu() {
@@ -781,6 +790,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadAccountInfo();
 });
+
+
+
 
 
 
