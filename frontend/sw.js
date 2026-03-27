@@ -1,4 +1,4 @@
-const CACHE_NAME = "deetech-static-v11";
+const CACHE_NAME = "deetech-static-v12";
 const OFFLINE_URL = "offline.html";
 const SNAPSHOT_URL = "assets/data/products-snapshot.json";
 const PLACEHOLDER_URL = "assets/img/placeholder.svg";
@@ -18,6 +18,7 @@ const PRECACHE_URLS = [
   "assets/js/auth.js",
   "assets/js/account.js",
   "assets/js/affiliates.js",
+  "assets/js/account-mobile-reveal.js",
   SNAPSHOT_URL,
   PLACEHOLDER_URL,
 ];
@@ -70,6 +71,7 @@ function isRealtimeCriticalAsset(url) {
     p.endsWith("/assets/js/auth.js") ||
     p.endsWith("/assets/js/account.js") ||
     p.endsWith("/assets/js/affiliates.js") ||
+    p.endsWith("/assets/js/account-mobile-reveal.js") ||
     p.endsWith("/assets/css/header.css") ||
     p.endsWith("/assets/css/footer.css")
   );
