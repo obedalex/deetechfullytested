@@ -2063,3 +2063,29 @@ body.account-page-leaving .account-page {
   }
 }
 
+
+/* ===== Desktop Active Section Indicator ===== */
+@media (min-width: 1024px) {
+  .account-sidebar .account-sidebar-tab.account-active {
+    position: relative;
+    background: #f8fafc;
+    color: #1e3a8a;
+    font-weight: 700;
+  }
+
+  .account-sidebar .account-sidebar-tab.account-active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 10px;
+    bottom: 10px;
+    width: 3px;
+    background: #2563eb;
+    border-radius: 0 2px 2px 0;
+  }
+
+  .account-sidebar .account-sidebar-tab.account-active .account-tab-icon,
+  .account-sidebar .account-sidebar-tab.account-active .account-tab-chevron {
+    color: #1e3a8a;
+  }
+}
