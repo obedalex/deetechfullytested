@@ -202,7 +202,7 @@ const clearToken = () => localStorage.removeItem("token");
                 <a href="${basePrefix}account.html" class="dropdown-item auth-only">My Account Dashboard</a>
                 <a href="${basePrefix}orders.html" class="dropdown-item auth-only">Order History</a>
                 <a href="${basePrefix}wishlist.html" class="dropdown-item auth-only">Saved Wishlist</a>
-                <a href="${adminPrefix}admin.html" class="dropdown-item admin-only">Admin Dashboard</a>
+                <a href="${adminPrefix}index.html" class="dropdown-item admin-only">Admin Dashboard</a>
                 <button class="dropdown-item logout" id="logoutBtn">Logout</button>
               </div>
             </div>
@@ -297,7 +297,7 @@ const clearToken = () => localStorage.removeItem("token");
                 </span>
                 Wishlist
               </a>
-              <a class="mobile-menu-item admin-only" href="${adminPrefix}admin.html">
+              <a class="mobile-menu-item admin-only" href="${adminPrefix}index.html">
                 <span class="mobile-menu-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5 5.5 6v5.55c0 4.05 2.74 7.82 6.5 8.95 3.76-1.13 6.5-4.9 6.5-8.95V6z"></path><path d="M10.2 11.3V10a1.8 1.8 0 1 1 3.6 0v1.3"></path><rect x="9.1" y="11.3" width="5.8" height="4.2" rx="1"></rect></svg></span>
                 Admin Dashboard
               </a>
@@ -785,7 +785,7 @@ function wireRegister() {
         setUser(user);
         setToken(token);
         notify("Registration successful! Redirecting...", "success");
-        const target = user.role === "admin" ? "Admin/admin.html" : "account.html";
+        const target = user.role === "admin" ? "Admin/index.html" : "account.html";
         setTimeout(() => (location.href = target), 1000);
       } else {
         notify(data.message || "Registration failed", "error");
@@ -828,7 +828,7 @@ function wireLogin() {
         setUser(user);
         setToken(token);
         notify("Login successful! Redirecting...", "success");
-        const target = user.role === "admin" ? "Admin/admin.html" : "account.html";
+        const target = user.role === "admin" ? "Admin/index.html" : "account.html";
         setTimeout(() => (location.href = target), 1000);
       } else {
         notify(data.message || "Login failed", "error");
@@ -913,6 +913,7 @@ function guardProtected() {
   // Keep global fallback for non-module scripts
   window.auth = { getUser, setUser, clearUser, getToken, setToken, clearToken };
 })();
+
 
 
 
