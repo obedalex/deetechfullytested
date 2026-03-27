@@ -106,8 +106,9 @@
     }
 
     grid.innerHTML = "";
-
+    grid.classList.remove("wishlist-grid-empty");
     if (!Array.isArray(data) || data.length === 0) {
+      grid.classList.add("wishlist-grid-empty");
       grid.innerHTML = `
         <div class="wishlist-empty wishlist-empty-rich" role="status" aria-live="polite">
           <div class="wishlist-empty-icon" aria-hidden="true">
@@ -178,6 +179,9 @@
 
   loadWishlist().catch((e) => console.error(e));
 })();
+
+
+
 
 
 

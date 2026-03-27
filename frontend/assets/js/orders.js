@@ -37,6 +37,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       return "-";
     }
   };
+  const emptyOrdersMarkup = () => `
+    <div class="account-no-orders account-orders-empty" role="status" aria-live="polite">
+      <div class="account-orders-empty-icon" aria-hidden="true">
+        <svg viewBox="0 0 64 64" focusable="false">
+          <path d="M14 16h6l4 24h24l6-18H22" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"></path>
+          <circle cx="28" cy="50" r="4" fill="currentColor"></circle>
+          <circle cx="46" cy="50" r="4" fill="currentColor"></circle>
+          <path d="M14 16h-4" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"></path>
+        </svg>
+      </div>
+      <h3>No orders yet</h3>
+      <p>Your order history will appear here once you complete a purchase.</p>
+    </div>
+  `;
 
   const affiliateStatusLabel = (order) => {
     const affiliateCode = String(order?.affiliateCode || "").trim();
@@ -341,7 +355,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     if (!Array.isArray(data) || !data.length) {
-      ordersEl.innerHTML = `<div class="account-no-orders">No orders found.</div>`;
+      ordersEl.innerHTML = emptyOrdersMarkup();
       return;
     }
 
@@ -534,5 +548,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
   const productLookup = new Map();
+
+
+
 
 

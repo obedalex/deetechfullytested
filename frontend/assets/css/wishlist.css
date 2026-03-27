@@ -211,3 +211,16 @@
   color: #64748b;
   font-size: 0.96rem;
 }
+
+.wishlist-content .product-grid.wishlist-grid-empty {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: clamp(320px, 56vh, 560px);
+}
+
+.wishlist-content .product-grid.wishlist-grid-empty .wishlist-empty-rich {
+  width: min(560px, 94%);
+  margin: 0 auto;
+}
+
