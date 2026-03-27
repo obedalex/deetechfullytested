@@ -1769,3 +1769,86 @@
 }
 
 
+
+/* ===== Account Navigation Smoothness ===== */
+.account-page {
+  transition: opacity 0.16s ease, transform 0.16s ease;
+}
+
+body.account-page-leaving .account-page {
+  opacity: 0.7;
+  transform: translateY(4px);
+}
+
+/* ===== Account Header Readability ===== */
+.account-header h1 {
+  font-size: clamp(2.05rem, 3vw, 2.75rem);
+}
+
+.account-welcome {
+  font-size: clamp(1rem, 1.3vw, 1.12rem);
+}
+
+@media (max-width: 1023px) {
+  .account-header h1 {
+    font-size: 1.72rem;
+  }
+
+  .account-welcome {
+    font-size: 0.95rem;
+  }
+}
+
+/* ===== Change Password Input Upgrade ===== */
+#changePasswordForm .account-form-group {
+  margin: 0 0 1rem;
+  padding: 0;
+  border: 0;
+  display: block;
+}
+
+#changePasswordForm .account-form-group label {
+  margin-bottom: 0.45rem;
+  font-size: 0.96rem;
+  font-weight: 600;
+}
+
+#changePasswordForm .password-field {
+  position: relative;
+}
+
+#changePasswordForm .password-field input {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 5.2rem 0 1rem;
+  border: 1px solid #cfd9ea;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #334155;
+  font-size: 1rem;
+}
+
+#changePasswordForm .password-field input:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+#changePasswordForm .password-toggle {
+  position: absolute;
+  right: 0.55rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 1px solid #c5d2e2;
+  background: #ffffff;
+  color: #2563eb;
+  border-radius: 8px;
+  padding: 0.34rem 0.68rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+#changePasswordForm .password-toggle:hover {
+  background: #eff6ff;
+}
