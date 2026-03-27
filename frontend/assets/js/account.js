@@ -529,6 +529,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   async function handleProfileSave(e) {
     e.preventDefault();
+    if (!isProfileEditing) return;
+
     const token = typeof getToken === "function" ? getToken() : null;
     if (!token) {
       showToast?.("Please sign in to update your profile.", "info");
@@ -580,6 +582,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       else localStorage.setItem("loggedInUser", JSON.stringify(updatedUser));
 
       if (welcomeName) welcomeName.textContent = data.firstName || firstName || data.name || "Customer";
+      profileSnapshot = captureProfileSnapshot();
+      setProfileEditMode(false);
       setMessage("Profile updated successfully.", "success");
       showToast?.("Profile updated", "success");
     } catch (err) {
@@ -597,6 +601,49 @@ document.addEventListener("DOMContentLoaded", async () => {
     window.location.replace("login.html");
   }
 
+  const profileEditBtn = document.getElementById("accountProfileEditBtn");
+  const profileSaveBtn = form ? form.querySelector(".account-save-btn") : null;
+  let isProfileEditing = false;
+  let profileSnapshot = null;
+
+  function captureProfileSnapshot() {
+    return {
+      firstName: firstNameInput?.value || "",
+      lastName: lastNameInput?.value || "",
+      phone: phoneInput?.value || "",
+      address: addressInput?.value || "",
+      region: regionInput?.value || "",
+      city: cityInput?.value || "",
+    };
+  }
+
+  function applyProfileSnapshot(snapshot) {
+    if (!snapshot) return;
+    if (firstNameInput) firstNameInput.value = snapshot.firstName || "";
+    if (lastNameInput) lastNameInput.value = snapshot.lastName || "";
+    if (phoneInput) phoneInput.value = snapshot.phone || "";
+    if (addressInput) addressInput.value = snapshot.address || "";
+    if (regionInput) regionInput.value = snapshot.region || "";
+    if (cityInput) cityInput.value = snapshot.city || "";
+  }
+
+  function setProfileEditMode(enabled) {
+    isProfileEditing = Boolean(enabled);
+    [firstNameInput, lastNameInput, phoneInput, addressInput, regionInput, cityInput].forEach((input) => {
+      if (!input) return;
+      input.disabled = !isProfileEditing;
+      input.classList.toggle("account-disabled-input", !isProfileEditing);
+    });
+
+    if (profileEditBtn) {
+      profileEditBtn.textContent = isProfileEditing ? "Cancel Edit" : "Edit Profile";
+      profileEditBtn.classList.toggle("account-editing", isProfileEditing);
+    }
+    if (profileSaveBtn) {
+      profileSaveBtn.style.display = isProfileEditing ? "" : "none";
+      profileSaveBtn.disabled = !isProfileEditing;
+    }
+  }
   tabProfileBtn?.addEventListener("click", () => activateTab("profile"));
   tabReviewsBtn?.addEventListener("click", () => activateTab("reviews"));
   tabAffiliateBtn?.addEventListener("click", () => activateTab("affiliate"));
@@ -672,3 +719,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadAccountInfo();
 });
+
+
+
+
+
