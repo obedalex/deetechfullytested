@@ -205,6 +205,7 @@ const clearToken = () => localStorage.removeItem("token");
                 <a href="${basePrefix}account.html" class="dropdown-item auth-only">Profile</a>
                 <a href="${basePrefix}orders.html" class="dropdown-item auth-only">Orders</a>
                 <a href="${basePrefix}wishlist.html" class="dropdown-item auth-only">Wishlist</a>
+                <a href="${adminPrefix}index.html" class="dropdown-item admin-only">Admin Dashboard</a>
                 <button class="dropdown-item logout" id="logoutBtn">Logout</button>
               </div>
             </div>
@@ -920,6 +921,7 @@ function guardProtected() {
   // Keep global fallback for non-module scripts
   window.auth = { getUser, setUser, clearUser, getToken, setToken, clearToken };
 })();
+
 
 
 
