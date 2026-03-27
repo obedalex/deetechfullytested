@@ -1,4 +1,4 @@
-﻿// assets/js/product.js
+// assets/js/product.js
 document.addEventListener("DOMContentLoaded", () => {
   const { API_BASE_PRODUCTS, BASE_URL, loadCart, saveCart, showToast } = window.CONFIG || {};
   const SNAPSHOT_PATH = "assets/data/products-snapshot.json";
@@ -1014,7 +1014,7 @@ document.addEventListener("DOMContentLoaded", () => {
               <div class="product-name">${escapeHtml(r.name)}</div>
               <div class="product-desc">${escapeHtml(shortDesc)}</div>
               <div class="product-price">GHC ${Number(r.price || 0).toFixed(2)}</div>
-              <div class="product-stock">${rStock > 0 ? `In Stock (${rStock})` : "Out of Stock"}</div>
+              <div class="product-stock ${rStock > 0 ? "in" : "out"}">${rStock > 0 ? `In Stock (${rStock})` : "Out of Stock"}</div>
             </div>
             <div class="card-actions">
               <button class="add-to-cart related-add-btn" data-id="${r._id}" ${rStock > 0 ? "" : "disabled"}>${rStock > 0 ? "Add to Cart" : "Out of Stock"}</button>
@@ -1069,3 +1069,4 @@ document.addEventListener("DOMContentLoaded", () => {
   wireTabs();
   if (productId) loadProduct();
 });
+

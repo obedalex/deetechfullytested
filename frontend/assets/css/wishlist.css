@@ -224,3 +224,9 @@
   margin: 0 auto;
 }
 
+
+.wishlist-content .product-grid > .wishlist-auth-required {
+  grid-column: 1 / -1;
+  justify-self: center;
+  width: min(560px, 100%);
+}

@@ -504,11 +504,12 @@
 
 .product-stock::before {
   content: "";
-  width: 14px;
-  height: 14px;
+  width: 10px;
+  height: 10px;
   display: inline-block;
-  background-size: contain;
-  background-repeat: no-repeat;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0);
 }
 
 .product-stock.in {
@@ -516,7 +517,8 @@
 }
 
 .product-stock.in::before {
-  background-image: url("../img/icons/check.png");
+  animation: productStockPulse 1.6s ease-in-out infinite;
+  box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.38);
 }
 
 .product-stock.out {
@@ -524,7 +526,8 @@
 }
 
 .product-stock.out::before {
-  background-image: url("../img/icons/x.png");
+  background: #dc2626;
+  box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.2);
 }
 
 .product-actions {
@@ -988,5 +991,22 @@
 }
 
 
+
+
+
+@keyframes productStockPulse {
+  0% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.42);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 8px rgba(22, 163, 74, 0);
+  }
+  100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
+  }
+}
 
 
