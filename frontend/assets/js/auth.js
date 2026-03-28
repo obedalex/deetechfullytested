@@ -1,4 +1,4 @@
-// assets/js/auth.js
+﻿// assets/js/auth.js
 (function () {
   const { API_BASE, API_BASE_USERS, showToast } = window.CONFIG || {};
   const notify = typeof showToast === "function" ? showToast : (msg) => console.log(msg);
@@ -280,33 +280,11 @@ const clearToken = () => localStorage.removeItem("token");
             <div class="mobile-menu-grid" id="mobileCategoryGrid"></div>
 
             <div class="mobile-menu-items">
-              <a class="mobile-menu-item ${path.includes('contact.html') ? "active" : ""}" href="${basePrefix}contact.html">
-                <span class="mobile-menu-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 5.5h18v11H8l-5 4v-15z"></path><path d="M8.5 10h7M8.5 13h4.5"></path></svg></span>
-                Support
-              </a>
-              <a class="mobile-menu-item ${path.includes('about.html') ? "active" : ""}" href="${basePrefix}about.html">
-                <span class="mobile-menu-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5z"></path><path d="M8.5 8h7M8.5 12h7M8.5 16h5"></path></svg></span>
-                About
-              </a>
-              <a class="mobile-menu-item ${path.includes('affiliates.html') ? "active" : ""}" href="${basePrefix}affiliates.html">
-                <span class="mobile-menu-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 11a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm8 0a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5z"></path><path d="M3.5 18.5c.8-2.1 2.4-3.3 4.5-3.3 2.1 0 3.7 1.2 4.5 3.3"></path><path d="M11.5 18.5c.8-2.1 2.4-3.3 4.5-3.3 2.1 0 3.7 1.2 4.5 3.3"></path></svg></span>
-                Affiliates
-              </a>
-              <a class="mobile-menu-item auth-only ${path.includes('wishlist.html') ? "active" : ""}" href="${basePrefix}wishlist.html">
-                <span class="mobile-menu-item-icon mobile-menu-item-icon--wishlist">
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-                  </svg>
-                  <span class="mobile-wishlist-badge" id="mobileWishlistCount">0</span>
-                </span>
-                Wishlist
-              </a>
               <a class="mobile-menu-item admin-only" href="${adminPrefix}index.html">
                 <span class="mobile-menu-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3.5 5.5 6v5.55c0 4.05 2.74 7.82 6.5 8.95 3.76-1.13 6.5-4.9 6.5-8.95V6z"></path><path d="M10.2 11.3V10a1.8 1.8 0 1 1 3.6 0v1.3"></path><rect x="9.1" y="11.3" width="5.8" height="4.2" rx="1"></rect></svg></span>
                 Admin Dashboard
               </a>
-              <button class="mobile-menu-item logout auth-only" id="mobileLogoutBtn" type="button">
-                <img class="mobile-menu-item-icon" src="${basePrefix}assets/img/icons/x.png" alt="" width="24" height="24" loading="lazy" decoding="async" />
+              <button class="mobile-menu-logout-btn auth-only" id="mobileLogoutBtn" type="button">
                 Logout
               </button>
             </div>
@@ -726,13 +704,13 @@ const clearToken = () => localStorage.removeItem("token");
   };
 
   const categoryIconMap = {
-    laptops: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/laptop.svg",
-    phones: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/phone.svg",
-    monitors: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/display.svg",
-    accessories: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/headphones.svg",
-    storage: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/device-hdd.svg",
-    printers: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/printer.svg",
-    others: "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/icons/grid.svg",
+    laptops: "category%20img/laptops.webp",
+    phones: "category%20img/mobilephones.jfif",
+    monitors: "category%20img/monitors.avif",
+    accessories: "category%20img/accessories.webp",
+    storage: "category%20img/storage%20devices.webp",
+    printers: "category%20img/printers.webp",
+    others: "category%20img/others.png",
   };
 
   function loadMobileCategories() {
@@ -748,8 +726,11 @@ const clearToken = () => localStorage.removeItem("token");
         const icon = categoryIconMap[key] || categoryIconMap.others;
         return `
           <a class="mobile-menu-tile" href="${basePrefix}products.html?category=${encodeURIComponent(key)}">
-            <img src="${icon}" alt="${label}" width="24" height="24" loading="lazy" decoding="async" />
-            <span>${label}</span>
+            <span class="mobile-menu-tile-left">
+              <img src="${basePrefix}${icon}" alt="${label}" width="26" height="26" loading="lazy" decoding="async" />
+              <span>${label}</span>
+            </span>
+            <span class="mobile-menu-tile-arrow" aria-hidden="true">›</span>
           </a>
         `;
       })
@@ -922,6 +903,7 @@ function guardProtected() {
   // Keep global fallback for non-module scripts
   window.auth = { getUser, setUser, clearUser, getToken, setToken, clearToken };
 })();
+
 
 
 

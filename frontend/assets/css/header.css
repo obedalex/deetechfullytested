@@ -1,4 +1,4 @@
-:root {
+﻿:root {
   --navbar-bg: rgba(255, 255, 255, 0.95);
   --navbar-bg-solid: #ffffff;
   --navbar-text: #000000;
@@ -751,40 +751,54 @@ body { padding-top: 70px; }
 }
 
 .mobile-menu-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  padding: 16px 1.5rem 8px;
+  display: block;
+  padding: 10px 0 0;
 }
 
 .mobile-menu-tile {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px solid #e5e7eb;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 14px 1.5rem;
+  border: none;
+  border-bottom: 1px solid #eceff4;
   background: #ffffff;
   color: #111827;
   text-decoration: none;
   font-weight: 600;
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+  box-shadow: none;
+}
+
+.mobile-menu-tile-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
 }
 
 .mobile-menu-tile img {
-  width: 26px;
-  height: 26px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
-  filter: grayscale(1);
+  filter: none;
+  flex: 0 0 auto;
 }
 
 .mobile-menu-tile span {
-  font-size: 0.92rem;
+  font-size: 0.98rem;
   line-height: 1.2;
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.mobile-menu-tile-arrow {
+  color: #111827;
+  font-size: 1.35rem;
+  line-height: 1;
+  opacity: 0.9;
 }
 
 .mobile-menu-grid-empty {
@@ -798,9 +812,9 @@ body { padding-top: 70px; }
 }
 
 .mobile-menu-items {
-  flex: 1;
-  padding: 0.5rem 0 1rem;
-  overflow-y: auto;
+  flex: 0 0 auto;
+  padding: 10px 1.25rem 16px;
+  overflow: visible;
 }
 
 .mobile-menu-item {
@@ -897,15 +911,24 @@ body { padding-top: 70px; }
   color: var(--navbar-hover);
 }
 
-.mobile-menu-item.logout {
-  color: #dc2626;
-  border-top: 2px solid var(--navbar-border);
-  margin-top: 0.5rem;
-  padding-top: 1.25rem;
+.mobile-menu-logout-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1px solid #d32f2f;
+  background: #fff5f5;
+  color: #c62828;
+  font-weight: 700;
+  font-size: 0.95rem;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.mobile-menu-item.logout:hover {
-  background: #fef2f2;
+.mobile-menu-logout-btn:hover {
+  background: #ffe5e5;
 }
 
 /* Responsive Design */
@@ -1275,3 +1298,4 @@ body { padding-top: 70px; }
     min-width: 220px;
   }
 }
+
