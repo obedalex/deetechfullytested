@@ -478,6 +478,16 @@ function restoreCheckoutDraft() {
   if (payment && methodEl) {
     methodEl.value = payment;
     setPaymentInstructions(payment);
+    try {
+      methodEl.dispatchEvent(new Event("change", { bubbles: true }));
+    } catch {}
+  }
+
+  const affiliateEl = document.getElementById("affiliate-code");
+  if (affiliateEl && String(draft.affiliateCode || "").trim()) {
+    try {
+      affiliateEl.dispatchEvent(new Event("input", { bubbles: true }));
+    } catch {}
   }
 }
 function canUseEmailJsOrders() {
@@ -2058,6 +2068,9 @@ function handleCheckout(products) {
     }
   });
 })();
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-/* ---------- Product Listing (products.html) ---------- */
+﻿/* ---------- Product Listing (products.html) ---------- */
 .products-page {
   padding: 2rem 0;
   background: var(--bg);
@@ -839,7 +839,9 @@
     margin-top: 0.1rem;
   }
   .product-stock {
-    display: block !important;
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
     font-size: 0.72rem;
     margin-top: 0.1rem;
   }
@@ -1008,5 +1010,6 @@
     box-shadow: 0 0 0 0 rgba(22, 163, 74, 0);
   }
 }
+
 
 
