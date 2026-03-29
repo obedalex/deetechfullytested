@@ -917,10 +917,10 @@
   background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(4px);
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
   z-index: 7002;
-  padding: calc(70px + 0.75rem) 1rem 1rem;
+  padding: 1rem;
   overflow: auto;
 }
 
@@ -2834,4 +2834,9 @@ body.account-page-leaving .account-page {
     display: grid;
     grid-template-columns: 1fr;
   }
+}
+
+body.account-modal-open {
+  overflow: hidden !important;
+  touch-action: none;
 }

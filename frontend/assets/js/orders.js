@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </tr>
           </table>
 
-          <div class="free-delivery">✓ Free delivery included</div>
+          <div class="free-delivery">âœ“ Free delivery included</div>
 
           <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order-status-box" style="margin-top:18px;">
             <tr>
@@ -550,7 +550,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       `;
 
       document.body.appendChild(overlay);
-      const close = () => overlay.remove();
+      document.body.classList.add("account-modal-open");
+      const close = () => {
+        document.body.classList.remove("account-modal-open");
+        overlay.remove();
+      };
       overlay.addEventListener("click", (e) => {
         if (e.target === overlay) close();
         if (e.target.classList.contains("account-order-modal-close")) close();
@@ -572,8 +576,3 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
   const productLookup = new Map();
-
-
-
-
-
