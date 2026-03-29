@@ -364,6 +364,15 @@ export async function sendPasswordResetEmail(to, resetUrl) {
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 12000);
+  const websiteUrl = trimTrailingSlash(FRONTEND_URL) || "https://deetechfullytested.vercel.app";
+  const logoUrl = "https://res.cloudinary.com/dt8bwsleg/image/upload/f_auto,q_auto/logo_p8idca";
+  const inferredName = String(to || "")
+    .split("@")[0]
+    .replace(/[._-]+/g, " ")
+    .trim();
+  const toName = inferredName
+    ? inferredName.replace(/\b\w/g, (m) => m.toUpperCase())
+    : "Customer";
 
   try {
     const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
@@ -379,12 +388,17 @@ export async function sendPasswordResetEmail(to, resetUrl) {
         template_params: {
           email: to,
           to_email: to,
-          to_name: "Customer",
+          to_name: toName,
           reset_url: resetUrl,
           reset_link: resetUrl,
           company_name: COMPANY_NAME,
           support_email: SUPPORT_EMAIL,
           support_phone: SUPPORT_PHONE,
+          support_whatsapp: "https://wa.me/233591755964",
+          website_url: websiteUrl,
+          logo_url: logoUrl,
+          expiry_time: "1 hour",
+          current_year: String(new Date().getFullYear()),
           subject: "Password Reset Request",
         },
       }),
