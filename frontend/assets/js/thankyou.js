@@ -62,6 +62,7 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   const discountCode = String(order.discountCode || "").trim();
   const discountPercent = Number(order.discountPercent || 0);
+  const subtotalAfterDiscount = Math.max(0, subtotalValue - discountAmountValue);
 
   if (headingEl) {
     headingEl.textContent = `Order Confirmed #${order.reference || "N/A"}`;
@@ -185,7 +186,10 @@ document.addEventListener("DOMContentLoaded", () => {
       <div class="tot-row"><span>Subtotal:</span><span>${money(subtotalValue)}</span></div>
       ${
         discountAmountValue > 0
-          ? `<div class="tot-row"><span>Discount${discountCode ? ` (${esc(discountCode)})` : ""}:</span><span>- ${money(discountAmountValue)}</span></div>`
+          ? `<div class="tot-row"><span>Discount Code:</span><span>${discountCode ? esc(discountCode) : "N/A"}</span></div>
+             <div class="tot-row"><span>Discount Percent:</span><span>${discountPercent > 0 ? `${discountPercent}%` : "N/A"}</span></div>
+             <div class="tot-row"><span>Discount Amount:</span><span>- ${money(discountAmountValue)}</span></div>
+             <div class="tot-row"><span>Subtotal After Discount:</span><span>${money(subtotalAfterDiscount)}</span></div>`
           : ""
       }
       <div class="tot-row"><span>Delivery Fee:</span><span>${shippingValue === 0 ? "FREE" : money(shippingValue)}</span></div>
@@ -243,7 +247,10 @@ document.addEventListener("DOMContentLoaded", () => {
           <div class="thankyou-summary-row"><span>Subtotal</span><strong>${money(subtotalValue)}</strong></div>
           ${
             discountAmountValue > 0
-              ? `<div class="thankyou-summary-row"><span>Discount${discountCode ? ` (${esc(discountCode)})` : ""}${discountPercent > 0 ? ` ${discountPercent}%` : ""}</span><strong>- ${money(discountAmountValue)}</strong></div>`
+              ? `<div class="thankyou-summary-row"><span>Discount Code</span><strong>${discountCode || "N/A"}</strong></div>
+                 <div class="thankyou-summary-row"><span>Discount Percent</span><strong>${discountPercent > 0 ? `${discountPercent}%` : "N/A"}</strong></div>
+                 <div class="thankyou-summary-row"><span>Discount Amount</span><strong>- ${money(discountAmountValue)}</strong></div>
+                 <div class="thankyou-summary-row"><span>Subtotal After Discount</span><strong>${money(subtotalAfterDiscount)}</strong></div>`
               : ""
           }
           <div class="thankyou-summary-row"><span>Delivery</span><strong>${shippingValue === 0 ? "FREE" : money(shippingValue)}</strong></div>

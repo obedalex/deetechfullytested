@@ -157,6 +157,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const supportEmail = "deetechcomputers01@gmail.com";
     const subtotal = items.reduce((sum, item) => sum + (Number(item?.qty || 1) * getItemPrice(item)), 0);
     const total = Number(order.totalPrice || subtotal);
+    const discountAmount = Number(order.discountAmount || 0);
+    const discountCode = String(order.discountCode || "").trim();
+    const discountPercent = Number(order.discountPercent || 0);
+    const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount);
     const year = new Date().getFullYear();
 
     return `<!DOCTYPE html>
@@ -241,6 +245,26 @@ document.addEventListener("DOMContentLoaded", async () => {
               <td width="70%" style="padding:4px 0; font-weight:500;">Subtotal:</td>
               <td width="30%" align="right" style="padding:4px 0; font-weight:500;">GHC ${subtotal.toFixed(2)}</td>
             </tr>
+            ${
+              discountAmount > 0
+                ? `<tr>
+                     <td style="padding:4px 0; font-weight:500;">Discount Code:</td>
+                     <td align="right" style="padding:4px 0; font-weight:500;">${discountCode || "N/A"}</td>
+                   </tr>
+                   <tr>
+                     <td style="padding:4px 0; font-weight:500;">Discount Percent:</td>
+                     <td align="right" style="padding:4px 0; font-weight:500;">${discountPercent > 0 ? `${discountPercent}%` : "N/A"}</td>
+                   </tr>
+                   <tr>
+                     <td style="padding:4px 0; font-weight:500;">Discount Amount:</td>
+                     <td align="right" style="padding:4px 0; font-weight:500;">- GHC ${discountAmount.toFixed(2)}</td>
+                   </tr>
+                   <tr>
+                     <td style="padding:4px 0; font-weight:500;">Subtotal After Discount:</td>
+                     <td align="right" style="padding:4px 0; font-weight:500;">GHC ${subtotalAfterDiscount.toFixed(2)}</td>
+                   </tr>`
+                : ""
+            }
             <tr>
               <td style="padding:4px 0; font-weight:500;">Delivery Fee:</td>
               <td align="right" style="padding:4px 0; color:#28a745; font-weight:bold;">FREE</td>

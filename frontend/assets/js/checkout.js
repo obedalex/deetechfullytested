@@ -1,4 +1,4 @@
-﻿// assets/js/checkout.js
+// assets/js/checkout.js
 // Save order to backend (emails are sent by backend SMTP service)
 (function () {
 
@@ -542,7 +542,7 @@ async function sendOrderEmailsViaEmailJs({
       (item) => `<tr>
         <td width="50%" style="padding:8px 0 8px 5px; font-size:12px;">${item.name}</td>
         <td width="20%" align="center" style="padding:8px 0; font-size:12px;">${item.quantity}</td>
-        <td width="30%" align="right" style="padding:8px 5px 8px 0; font-size:12px;">GHâ‚µ ${item.subtotal.toFixed(2)}</td>
+        <td width="30%" align="right" style="padding:8px 5px 8px 0; font-size:12px;">GH₵ ${item.subtotal.toFixed(2)}</td>
       </tr>`
     )
     .join("");
@@ -555,8 +555,8 @@ async function sendOrderEmailsViaEmailJs({
           <div style="font-size: 13px; color: #666; margin: 4px 0;">ID: ${item.id}</div>
           <div style="font-size: 13px;">
             <span style="color: #333;">Quantity:</span> ${item.quantity} x
-            <span style="color: #333;">GHâ‚µ ${item.price.toFixed(2)}</span> =
-            <strong style="color: #d9534f;">GHâ‚µ ${item.subtotal.toFixed(2)}</strong>
+            <span style="color: #333;">GH₵ ${item.price.toFixed(2)}</span> =
+            <strong style="color: #d9534f;">GH₵ ${item.subtotal.toFixed(2)}</strong>
           </div>
         </div>`
     )
@@ -572,7 +572,7 @@ async function sendOrderEmailsViaEmailJs({
     order_id: String(orderId),
     order_subtotal: orderTotal.toFixed(2),
     order_total: orderTotal.toFixed(2),
-    currency_symbol: "GHâ‚µ ",
+    currency_symbol: "GH₵ ",
     order_items: orderItemsTableRows || "<tr><td colspan='3'>No items listed</td></tr>",
     order_date: orderDate,
     payment_method: paymentMethod || "Not specified",
@@ -597,7 +597,7 @@ async function sendOrderEmailsViaEmailJs({
     customer_name: customerName || "Customer",
     customer_email: String(customerEmail || "").trim(),
     customer_phone: customerPhone || "",
-    order_total: `GHâ‚µ ${orderTotal.toFixed(2)}`,
+    order_total: `GH₵ ${orderTotal.toFixed(2)}`,
     order_items: orderItemsBlocks || "<div>No items listed</div>",
     order_date: orderDate,
     order_time: orderTime,
@@ -955,6 +955,12 @@ async function renderOrder(products) {
   const totalEl = document.getElementById("order-total");
   const shippingEl = document.getElementById("shipping");
   const discountEl = document.getElementById("discount-amount");
+  const discountCodeRowEl = document.getElementById("discount-code-row");
+  const discountCodeUsedEl = document.getElementById("discount-code-used");
+  const discountPercentRowEl = document.getElementById("discount-percent-row");
+  const discountPercentUsedEl = document.getElementById("discount-percent-used");
+  const discountedSubtotalRowEl = document.getElementById("discounted-subtotal-row");
+  const discountedSubtotalEl = document.getElementById("discounted-subtotal");
 
   if (!orderItemsEl || !totalEl || !shippingEl) return;
 
@@ -964,6 +970,10 @@ async function renderOrder(products) {
     orderItemsEl.innerHTML = `<p>Your cart is empty.</p>`;
     shippingEl.textContent = money(0);
     totalEl.textContent = money(0);
+    if (discountEl) discountEl.textContent = money(0);
+    if (discountCodeRowEl) discountCodeRowEl.style.display = "none";
+    if (discountPercentRowEl) discountPercentRowEl.style.display = "none";
+    if (discountedSubtotalRowEl) discountedSubtotalRowEl.style.display = "none";
     return;
   }
 
@@ -992,10 +1002,34 @@ async function renderOrder(products) {
   });
 
   const shipping = 0;
-  const discountAmount = discountState.amount || 0;
+  const discountAmount = Number(discountState.amount || 0);
+  const discountCode = String(discountState.code || "").trim();
+  const discountPercent = Number(discountState.percent || 0);
+  const subtotalAfterDiscount = Math.max(0, subtotal - discountAmount);
+  const hasDiscountApplied = discountAmount > 0;
+
   if (discountEl) discountEl.textContent = money(discountAmount);
   shippingEl.textContent = "FREE Nationwide Delivery";
-  totalEl.textContent = money(subtotal - discountAmount + shipping);
+  totalEl.textContent = money(subtotalAfterDiscount + shipping);
+
+  if (discountCodeRowEl) {
+    discountCodeRowEl.style.display = hasDiscountApplied ? "flex" : "none";
+  }
+  if (discountCodeUsedEl) {
+    discountCodeUsedEl.textContent = discountCode || "-";
+  }
+  if (discountPercentRowEl) {
+    discountPercentRowEl.style.display = hasDiscountApplied ? "flex" : "none";
+  }
+  if (discountPercentUsedEl) {
+    discountPercentUsedEl.textContent = discountPercent > 0 ? `${discountPercent}%` : "-";
+  }
+  if (discountedSubtotalRowEl) {
+    discountedSubtotalRowEl.style.display = hasDiscountApplied ? "flex" : "none";
+  }
+  if (discountedSubtotalEl) {
+    discountedSubtotalEl.textContent = money(subtotalAfterDiscount);
+  }
 
   const affiliateRow = document.getElementById("checkoutAffiliateRow");
   const affiliateAmount = document.getElementById("checkoutAffiliateAmount");
