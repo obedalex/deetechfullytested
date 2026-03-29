@@ -87,13 +87,23 @@ function orderItemsForEmail(items = []) {
 
 function initTransporter() {
   if (SMTP_HOST && SMTP_USER && SMTP_PASS) {
+    const smtpPort = Number(SMTP_PORT) || 587;
+    const isSecure = smtpPort === 465;
+
     const t = nodemailer.createTransport({
       host: SMTP_HOST,
-      port: Number(SMTP_PORT) || 587,
-      secure: false,
+      port: smtpPort,
+      secure: isSecure,
       auth: {
         user: SMTP_USER,
         pass: SMTP_PASS,
+      },
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000,
+      requireTLS: !isSecure,
+      tls: {
+        minVersion: "TLSv1.2",
       },
     });
 
@@ -360,7 +370,7 @@ export async function sendPasswordResetEmail(to, resetUrl) {
 export const sendOrderConfirmationEmail = sendOrderConfirmation;
 
 
-function verifyTransporter(timeoutMs = 5000) {
+function verifyTransporter(timeoutMs = 12000) {
   if (!transporter || typeof transporter.verify !== "function") {
     return Promise.resolve({ ok: false, message: "SMTP transporter is not configured" });
   }
@@ -371,7 +381,7 @@ function verifyTransporter(timeoutMs = 5000) {
       if (settled) return;
       settled = true;
       resolve({ ok: false, message: "SMTP verify timed out" });
-    }, Math.max(1000, Number(timeoutMs) || 5000));
+    }, Math.max(2000, Number(timeoutMs) || 12000));
 
     transporter.verify((err) => {
       if (settled) return;
@@ -388,7 +398,7 @@ function verifyTransporter(timeoutMs = 5000) {
 
 export async function getEmailHealthStatus() {
   const provider = getEmailProviderInfo();
-  const verify = await verifyTransporter(5000);
+  const verify = await verifyTransporter(12000);
 
   return {
     status: verify.ok ? "ok" : "degraded",
@@ -402,12 +412,18 @@ export async function getEmailHealthStatus() {
   };
 }
 export function getEmailProviderInfo() {
+  const smtpPort = Number(SMTP_PORT) || 587;
   return {
     provider: "smtp_nodemailer",
     smtpHost: SMTP_HOST || "",
+    smtpPort,
+    smtpSecure: smtpPort === 465,
     smtpUser: SMTP_USER || "",
+    smtpPassSet: Boolean(SMTP_PASS),
     hasTransporter: Boolean(transporter),
     frontendEmailJsActiveOnCheckout: true,
     environment: NODE_ENV,
   };
 }
+
+
