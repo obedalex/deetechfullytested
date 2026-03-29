@@ -604,22 +604,59 @@ document.addEventListener("DOMContentLoaded", async () => {
   function renderAffiliateDashboard(data) {
     const affiliate = data?.affiliate || {};
     const stats = data?.stats || {};
+    const settings = data?.settings || {};
+
+    const toNumber = (value) => {
+      if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+      const cleaned = String(value ?? "").replace(/[^\d.-]/g, "");
+      const parsed = Number(cleaned);
+      return Number.isFinite(parsed) ? parsed : 0;
+    };
 
     currentAffiliateCode = String(affiliate.code || "").trim();
     if (affiliateCodeEl) affiliateCodeEl.textContent = currentAffiliateCode || "-";
-    if (affiliateTierEl) {
-      const tier = String(affiliate.tier || "starter");
-      affiliateTierEl.textContent = `${tier.charAt(0).toUpperCase()}${tier.slice(1)}`;
+
+    const tierRaw = String(affiliate.tier || "starter");
+    const tierText = `${tierRaw.charAt(0).toUpperCase()}${tierRaw.slice(1)}`;
+    if (affiliateTierEl) affiliateTierEl.textContent = tierText;
+    if (affiliateTierHeadingEl) affiliateTierHeadingEl.textContent = tierText;
+    if (affiliateTierChipEl) affiliateTierChipEl.textContent = tierText;
+
+    const totalReferrals = toNumber(stats.totalReferrals);
+    const pendingReferrals = toNumber(stats.pendingReferrals);
+    const cancelledReferrals = toNumber(stats.cancelledReferrals);
+    const deliveredReferrals = toNumber(
+      stats.deliveredReferrals ?? Math.max(totalReferrals - pendingReferrals - cancelledReferrals, 0)
+    );
+
+    const earnedCommission = toNumber(stats.earnedCommission);
+    const pendingCommission = toNumber(stats.pendingCommission);
+
+    if (affiliateTotalReferralsEl) affiliateTotalReferralsEl.textContent = String(totalReferrals);
+    if (affiliatePendingReferralsEl) affiliatePendingReferralsEl.textContent = String(pendingReferrals);
+    if (affiliateEarnedCommissionEl) affiliateEarnedCommissionEl.textContent = money(earnedCommission);
+    if (affiliatePendingCommissionEl) affiliatePendingCommissionEl.textContent = money(pendingCommission);
+
+    const lifetime = earnedCommission + pendingCommission;
+    if (affiliateLifetimeEl) affiliateLifetimeEl.textContent = money(lifetime);
+
+    const successRate = totalReferrals > 0 ? Math.round((deliveredReferrals / totalReferrals) * 100) : 0;
+    if (affiliateSuccessRateEl) affiliateSuccessRateEl.textContent = `${successRate}%`;
+
+    const thresholds = settings?.tierThresholds || { bronze: 8, silver: 18, gold: 35 };
+    let hint = `Need ${Math.max(Number(thresholds.bronze || 8) - deliveredReferrals, 0)} more delivered referrals for Bronze.`;
+    if (deliveredReferrals >= Number(thresholds.gold || 35)) {
+      hint = "Gold tier unlocked. Keep scaling your referrals.";
+    } else if (deliveredReferrals >= Number(thresholds.silver || 18)) {
+      hint = `Need ${Math.max(Number(thresholds.gold || 35) - deliveredReferrals, 0)} more delivered referrals for Gold.`;
+    } else if (deliveredReferrals >= Number(thresholds.bronze || 8)) {
+      hint = `Need ${Math.max(Number(thresholds.silver || 18) - deliveredReferrals, 0)} more delivered referrals for Silver.`;
     }
-    if (affiliateTotalReferralsEl) affiliateTotalReferralsEl.textContent = String(stats.totalReferrals || 0);
-    if (affiliatePendingReferralsEl) affiliatePendingReferralsEl.textContent = String(stats.pendingReferrals || 0);
-    if (affiliateEarnedCommissionEl) affiliateEarnedCommissionEl.textContent = money(stats.earnedCommission || 0);
-    if (affiliatePendingCommissionEl) affiliatePendingCommissionEl.textContent = money(stats.pendingCommission || 0);
+    if (affiliateTierHintEl) affiliateTierHintEl.textContent = hint;
 
     affiliateJoinCard?.classList.add("account-hidden");
     affiliateDashboardCard?.classList.remove("account-hidden");
   }
-
   async function loadAffiliateSummary() {
     const token = typeof getToken === "function" ? getToken() : null;
     if (!token) {
