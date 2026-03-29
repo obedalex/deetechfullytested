@@ -493,6 +493,8 @@ function restoreCheckoutDraft() {
 function canUseEmailJsOrders() {
   return Boolean(
     window.emailjs &&
+      typeof window.emailjs.init === "function" &&
+      typeof window.emailjs.send === "function" &&
       EMAILJS_SERVICE_ID &&
       EMAILJS_PUBLIC_KEY &&
       EMAILJS_ADMIN_ORDER_TEMPLATE_ID &&
@@ -526,7 +528,14 @@ async function sendOrderEmailsViaEmailJs({
   paymentMethod,
   notes,
 }) {
-  if (!canUseEmailJsOrders()) return { skipped: true };
+  if (!canUseEmailJsOrders()) {
+    return {
+      skipped: true,
+      reason: "EmailJS client or template config is missing.",
+    };
+  }
+
+  const emailClient = window.emailjs;
 
   const orderId = savedOrder?._id || "N/A";
   const websiteUrl = window.location.origin || "https://deetechcomputers.com";
@@ -622,12 +631,12 @@ async function sendOrderEmailsViaEmailJs({
     website_url: websiteUrl,
   };
 
-  emailjs.init(EMAILJS_PUBLIC_KEY);
+  emailClient.init(EMAILJS_PUBLIC_KEY);
 
   const customerPromise = customerEmail
-    ? emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_ORDER_TEMPLATE_ID, customerParams)
+    ? emailClient.send(EMAILJS_SERVICE_ID, EMAILJS_ORDER_TEMPLATE_ID, customerParams)
     : Promise.resolve(null);
-  const adminPromise = emailjs.send(
+  const adminPromise = emailClient.send(
     EMAILJS_SERVICE_ID,
     EMAILJS_ADMIN_ORDER_TEMPLATE_ID,
     adminParams
@@ -1833,7 +1842,7 @@ function handleCheckout(products) {
         .join("");
 
       try {
-        await sendOrderEmailsViaEmailJs({
+        const emailResult = await sendOrderEmailsViaEmailJs({
           savedOrder,
           cart,
           customerName: name,
@@ -1843,7 +1852,11 @@ function handleCheckout(products) {
           city,
           paymentMethod: method,
           notes,
-        });
+                });
+        if (emailResult?.skipped) {
+          console.warn("Order email send skipped:", emailResult?.reason || "Unknown reason");
+          showMsg("Order saved, but email service is unavailable right now. We'll still process your order.", false);
+        }
       } catch (emailErr) {
         console.error("Order EmailJS send failed:", emailErr);
         showMsg("Order saved, but email notification failed. We'll still process your order.", false);
