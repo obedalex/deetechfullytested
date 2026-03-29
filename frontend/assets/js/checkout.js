@@ -2051,6 +2051,10 @@ function handleCheckout(products) {
       validateDiscountCodeUi();
     });
 
+    if (discountInput && discountInput.value.trim()) {
+      discountInput.value = discountInput.value.trim().toUpperCase();
+      await validateDiscountCodeUi();
+    }
 
     [
       "name",
