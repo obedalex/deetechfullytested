@@ -41,6 +41,9 @@ export const SMTP_PORT = process.env.SMTP_PORT || 587;
 export const SMTP_USER = process.env.SMTP_USER;
 export const SMTP_PASS = process.env.SMTP_PASS;
 export const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
+export const EMAILJS_PUBLIC_KEY = process.env.EMAILJS_PUBLIC_KEY || "";
+export const EMAILJS_RESET_SERVICE_ID = process.env.EMAILJS_RESET_SERVICE_ID || "";
+export const EMAILJS_RESET_TEMPLATE_ID = process.env.EMAILJS_RESET_TEMPLATE_ID || "";
 
 // Cloudinary (optional in local dev, expected in production media hosting)
 export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME || "";

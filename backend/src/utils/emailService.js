@@ -8,6 +8,9 @@ import {
   FRONTEND_URL,
   BACKEND_PUBLIC_URL,
   NODE_ENV,
+  EMAILJS_PUBLIC_KEY,
+  EMAILJS_RESET_SERVICE_ID,
+  EMAILJS_RESET_TEMPLATE_ID,
 } from "../config/env.js";
 import logger from "./logger.js";
 
@@ -347,6 +350,53 @@ export async function sendOrderConfirmation(to, orderDetails = {}) {
 }
 
 export async function sendPasswordResetEmail(to, resetUrl) {
+  const emailJsConfigured = Boolean(
+    EMAILJS_PUBLIC_KEY && EMAILJS_RESET_SERVICE_ID && EMAILJS_RESET_TEMPLATE_ID
+  );
+
+  if (emailJsConfigured) {
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 12000);
+
+      const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          service_id: EMAILJS_RESET_SERVICE_ID,
+          template_id: EMAILJS_RESET_TEMPLATE_ID,
+          user_id: EMAILJS_PUBLIC_KEY,
+          template_params: {
+            to_email: to,
+            to_name: "Customer",
+            reset_url: resetUrl,
+            reset_link: resetUrl,
+            company_name: COMPANY_NAME,
+            support_email: SUPPORT_EMAIL,
+            support_phone: SUPPORT_PHONE,
+            subject: "Password Reset Request",
+          },
+        }),
+        signal: controller.signal,
+      });
+
+      clearTimeout(timeout);
+
+      if (response.ok) {
+        return true;
+      }
+
+      const errorText = await response.text();
+      logger.warn(
+        `EmailJS reset send failed (${response.status}): ${errorText || "Unknown error"}`
+      );
+    } catch (err) {
+      logger.warn(`EmailJS reset send failed: ${err.message}`);
+    }
+  }
+
   const html = `
     <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;padding:24px;border:1px solid #e5e7eb;border-radius:8px;">
       <h2 style="margin:0 0 12px;">Password Reset Request</h2>
@@ -365,6 +415,8 @@ export async function sendPasswordResetEmail(to, resetUrl) {
     subject: "Password Reset Request",
     html,
   });
+
+  return true;
 }
 
 export const sendOrderConfirmationEmail = sendOrderConfirmation;
@@ -422,6 +474,7 @@ export function getEmailProviderInfo() {
     smtpPassSet: Boolean(SMTP_PASS),
     hasTransporter: Boolean(transporter),
     frontendEmailJsActiveOnCheckout: true,
+    resetEmailJsConfigured: Boolean(EMAILJS_PUBLIC_KEY && EMAILJS_RESET_SERVICE_ID && EMAILJS_RESET_TEMPLATE_ID),
     environment: NODE_ENV,
   };
 }
