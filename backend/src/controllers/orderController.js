@@ -7,6 +7,8 @@ import Referral from "../models/Referral.js";
 import fsPromises from "fs/promises";
 import path from "path";
 import { createOrderSchema, createGuestOrderSchema } from "../validators/orderSchemas.js";
+import { ADMIN_EMAIL } from "../config/env.js";
+import { sendOrderNotification, sendOrderConfirmation } from "../utils/emailService.js";
 
 async function processOrderItems(orderItems, session) {
   let total = 0;
@@ -176,6 +178,58 @@ function pickOrderCustomer(order) {
     name: String(order.shippingName || order.guestName || "").trim(),
     email: String(order.shippingEmail || order.guestEmail || "").trim(),
   };
+}
+
+function buildOrderItemsForEmail(order) {
+  const items = Array.isArray(order?.orderItems) ? order.orderItems : [];
+  return items.map((item) => {
+    const qty = Number(item?.qty || item?.quantity || 0);
+    const price = Number(item?.price || 0);
+    const productName =
+      String(item?.name || "").trim() ||
+      String(item?.product?.name || "").trim() ||
+      String(item?.product || "").trim() ||
+      "Product";
+    return {
+      qty,
+      quantity: qty,
+      price,
+      name: productName,
+      product: item?.product?._id || item?.product,
+    };
+  });
+}
+
+async function sendOrderEmailsBestEffort(order) {
+  if (!order) return;
+  const customer = pickOrderCustomer(order);
+  const orderDetails = {
+    id: String(order._id || ""),
+    createdAt: order.createdAt || new Date(),
+    customerName: customer.name || "Customer",
+    customerEmail: customer.email || "",
+    mobileNumber: String(order.mobileNumber || "").trim(),
+    deliveryAddress: String(order.shippingAddress || order.guestAddress || "").trim(),
+    deliveryRegion: String(order.deliveryRegion || order.shippingCity || order.guestCity || "").trim(),
+    paymentMethod: order.paymentMethod,
+    paymentStatus: order.paymentStatus,
+    orderStatus: order.orderStatus,
+    guestNotes: String(order.guestNotes || "").trim(),
+    paymentScreenshotUrl: String(order.paymentScreenshotUrl || "").trim(),
+    totalPrice: Number(order.totalPrice || 0),
+    orderItems: buildOrderItemsForEmail(order),
+  };
+
+  try {
+    if (ADMIN_EMAIL) {
+      await sendOrderNotification(ADMIN_EMAIL, orderDetails);
+    }
+    if (customer.email) {
+      await sendOrderConfirmation(customer.email, orderDetails);
+    }
+  } catch (err) {
+    console.warn("Backend order email send skipped:", err?.message || err);
+  }
 }
 
 async function resolveAffiliateByCode(codeRaw, buyerUserId, session) {
@@ -486,6 +540,13 @@ export async function createOrder(req, res) {
       console.warn("Referral sync skipped:", referralError?.message || referralError);
     }
 
+    try {
+      const orderForEmail = await Order.findById(order._id).populate("orderItems.product", "name");
+      await sendOrderEmailsBestEffort(orderForEmail || order);
+    } catch (emailError) {
+      console.warn("Order email dispatch skipped:", emailError?.message || emailError);
+    }
+
     return res.status(201).json({
       message: "Order created successfully",
       order,
@@ -646,7 +707,12 @@ export async function createGuestOrder(req, res) {
       console.warn("Referral sync skipped:", referralError?.message || referralError);
     }
 
-    // Order emails are handled by frontend EmailJS templates.
+    try {
+      const orderForEmail = await Order.findById(order._id).populate("orderItems.product", "name");
+      await sendOrderEmailsBestEffort(orderForEmail || order);
+    } catch (emailError) {
+      console.warn("Order email dispatch skipped:", emailError?.message || emailError);
+    }
 
     return res.status(201).json({
       message: "Order created successfully",
