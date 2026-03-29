@@ -354,69 +354,52 @@ export async function sendPasswordResetEmail(to, resetUrl) {
     EMAILJS_PUBLIC_KEY && EMAILJS_RESET_SERVICE_ID && EMAILJS_RESET_TEMPLATE_ID
   );
 
-  if (emailJsConfigured) {
-    try {
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), 12000);
-
-      const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          service_id: EMAILJS_RESET_SERVICE_ID,
-          template_id: EMAILJS_RESET_TEMPLATE_ID,
-          user_id: EMAILJS_PUBLIC_KEY,
-          template_params: {
-            to_email: to,
-            to_name: "Customer",
-            reset_url: resetUrl,
-            reset_link: resetUrl,
-            company_name: COMPANY_NAME,
-            support_email: SUPPORT_EMAIL,
-            support_phone: SUPPORT_PHONE,
-            subject: "Password Reset Request",
-          },
-        }),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeout);
-
-      if (response.ok) {
-        return true;
-      }
-
-      const errorText = await response.text();
-      logger.warn(
-        `EmailJS reset send failed (${response.status}): ${errorText || "Unknown error"}`
-      );
-    } catch (err) {
-      logger.warn(`EmailJS reset send failed: ${err.message}`);
-    }
+  if (!emailJsConfigured) {
+    throw new Error("Reset EmailJS is not configured");
   }
 
-  const html = `
-    <div style="font-family:Arial,sans-serif;max-width:520px;margin:0 auto;padding:24px;border:1px solid #e5e7eb;border-radius:8px;">
-      <h2 style="margin:0 0 12px;">Password Reset Request</h2>
-      <p style="margin:0 0 16px;">You requested a password reset for your account.</p>
-      <p style="margin:0 0 16px;">
-        <a href="${escapeHtml(resetUrl)}" style="background:#2563eb;color:#fff;text-decoration:none;padding:10px 16px;border-radius:6px;display:inline-block;">
-          Reset Password
-        </a>
-      </p>
-      <p style="margin:0;color:#6b7280;font-size:13px;">If you did not request this, you can ignore this email.</p>
-    </div>
-  `;
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 12000);
 
-  await sendEmail({
-    to,
-    subject: "Password Reset Request",
-    html,
-  });
+  try {
+    const response = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        service_id: EMAILJS_RESET_SERVICE_ID,
+        template_id: EMAILJS_RESET_TEMPLATE_ID,
+        user_id: EMAILJS_PUBLIC_KEY,
+        template_params: {
+          email: to,
+          to_email: to,
+          to_name: "Customer",
+          reset_url: resetUrl,
+          reset_link: resetUrl,
+          company_name: COMPANY_NAME,
+          support_email: SUPPORT_EMAIL,
+          support_phone: SUPPORT_PHONE,
+          subject: "Password Reset Request",
+        },
+      }),
+      signal: controller.signal,
+    });
 
-  return true;
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(
+        `EmailJS reset send failed (${response.status}): ${errorText || "Unknown error"}`
+      );
+    }
+
+    return true;
+  } catch (err) {
+    logger.error(`Reset EmailJS send failed: ${err.message}`);
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export const sendOrderConfirmationEmail = sendOrderConfirmation;
@@ -453,7 +436,7 @@ export async function getEmailHealthStatus() {
   const verify = await verifyTransporter(12000);
 
   return {
-    status: verify.ok ? "ok" : "degraded",
+    status: (verify.ok || provider.resetEmailJsConfigured) ? "ok" : "degraded",
     provider,
     smtp: {
       configured: Boolean(provider.smtpHost && provider.smtpUser),
