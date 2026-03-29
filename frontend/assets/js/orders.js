@@ -501,7 +501,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         })
         .join("");
 
-      return `<div class="account-order-progress" style="--progress:${progressPercent}%;">${html}</div>`;
+      return `<div class="account-order-progress" style="--progress:${progressPercent}%;"><div class="account-order-timeline">${html}</div></div>`;
     }
 
     function openOrderModal(order) {
@@ -606,5 +606,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
   const productLookup = new Map();
-
 
