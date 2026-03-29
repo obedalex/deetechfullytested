@@ -983,6 +983,7 @@
   --progress: 0%;
   width: 100%;
   overflow: visible;
+  isolation: isolate;
 }
 
 .account-order-timeline {
@@ -1023,7 +1024,7 @@
 
 .account-timeline-step {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   text-align: center;
 }
 
@@ -1037,12 +1038,16 @@
   align-items: center;
   justify-content: center;
   margin: 0 auto 0.65rem;
+  position: relative;
+  z-index: 3;
 }
 
 .account-timeline-icon svg {
   width: 20px;
   height: 20px;
   display: block;
+  position: relative;
+  z-index: 4;
 }
 
 .account-timeline-step.account-active .account-timeline-icon {
@@ -2932,4 +2937,5 @@ body.account-modal-open {
   overflow: hidden !important;
   touch-action: none;
 }
+
 
