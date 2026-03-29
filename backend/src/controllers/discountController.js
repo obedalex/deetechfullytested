@@ -68,3 +68,23 @@ export const generateDiscounts = asyncHandler(async (req, res) => {
 
   res.status(201).json({ count: created.length, codes: created.map((d) => d.code) });
 });
+
+// @desc    Delete a discount code (admin)
+// @route   DELETE /api/admin/discounts/:id
+// @access  Admin
+export const deleteDiscount = asyncHandler(async (req, res) => {
+  const discountId = String(req.params.id || "").trim();
+  if (!discountId) {
+    res.status(400);
+    throw new Error("Discount id is required");
+  }
+
+  const doc = await DiscountCode.findById(discountId);
+  if (!doc) {
+    res.status(404);
+    throw new Error("Discount code not found");
+  }
+
+  await DiscountCode.deleteOne({ _id: doc._id });
+  res.json({ message: "Discount code deleted", id: String(doc._id), code: doc.code });
+});

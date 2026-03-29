@@ -303,3 +303,20 @@
     font-size: 1.06rem;
   }
 }
+
+.discount-actions-row {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.discount-action-danger {
+  border-color: #fecaca;
+  color: #b91c1c;
+  background: #fff5f5;
+}
+
+.discount-action-danger:hover {
+  background: #fee2e2;
+}
+

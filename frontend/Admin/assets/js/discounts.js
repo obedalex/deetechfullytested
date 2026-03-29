@@ -1,5 +1,5 @@
 (async function () {
-  const { requireAdmin, apiFetch, API_BASE, toast } = window.AdminAPI || {};
+  const { requireAdmin, apiFetch, API_BASE, toast, confirmAction } = window.AdminAPI || {};
   if (!requireAdmin || !(await requireAdmin())) return;
 
   const form = document.getElementById("discountForm");
@@ -68,7 +68,12 @@
         <td>${Number(item.percent || 0)}%</td>
         <td>${usageLabel(Boolean(item.used))}</td>
         <td>${formatDate(item.createdAt)}</td>
-        <td><button type="button" class="discount-action" data-copy-code="${item.code || ""}">Copy</button></td>
+        <td>
+          <div class="discount-actions-row">
+            <button type="button" class="discount-action" data-copy-code="${item.code || ""}">Copy</button>
+            <button type="button" class="discount-action discount-action-danger" data-delete-id="${item._id || ""}" data-delete-code="${item.code || ""}">Delete</button>
+          </div>
+        </td>
       `;
       tbody.appendChild(row);
     });
@@ -100,6 +105,7 @@
         </div>
         <div class="discount-card-actions">
           <button type="button" class="discount-action" data-copy-code="${item.code || ""}">Copy</button>
+          <button type="button" class="discount-action discount-action-danger" data-delete-id="${item._id || ""}" data-delete-code="${item.code || ""}">Delete</button>
         </div>
       `;
       mobileList.appendChild(card);
@@ -145,6 +151,24 @@
     }
   }
 
+  async function deleteCode(id, code) {
+    const discountId = String(id || "").trim();
+    if (!discountId) return;
+
+    const confirmed = await confirmAction?.(
+      `Delete discount code ${String(code || "").trim() || "this code"}?\n\nThis action cannot be undone.`,
+      { title: "Delete Discount Code", confirmText: "Delete", cancelText: "Cancel" }
+    );
+    if (!confirmed) return;
+
+    await apiFetch(`${API_BASE}/admin/discounts/${encodeURIComponent(discountId)}`, {
+      method: "DELETE",
+    });
+
+    toast?.("Discount code deleted", "success");
+    await loadDiscounts();
+  }
+
   form?.addEventListener("submit", async (event) => {
     event.preventDefault();
 
@@ -178,9 +202,21 @@
     toast?.("Discount list refreshed", "success");
   });
 
-  document.addEventListener("click", (event) => {
+  document.addEventListener("click", async (event) => {
     const target = event.target;
     if (!(target instanceof HTMLElement)) return;
+
+    const deleteId = target.getAttribute("data-delete-id");
+    if (deleteId) {
+      try {
+        await deleteCode(deleteId, target.getAttribute("data-delete-code"));
+      } catch (error) {
+        console.error(error);
+        toast?.("Failed to delete discount code", "error");
+      }
+      return;
+    }
+
     const code = target.getAttribute("data-copy-code");
     if (!code) return;
     copyCode(code);
