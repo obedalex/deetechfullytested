@@ -281,7 +281,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             </tr>
           </table>
 
-          <div class="free-delivery">âœ“ Free delivery included</div>
+          <div class="free-delivery">&#10003; Free delivery included</div>
 
           <table width="100%" cellpadding="0" cellspacing="0" border="0" class="order-status-box" style="margin-top:18px;">
             <tr>
@@ -576,4 +576,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
   const productLookup = new Map();
+
 
