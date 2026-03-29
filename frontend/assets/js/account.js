@@ -23,9 +23,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   const tabProfileBtn = document.getElementById("accountTabProfile");
   const tabReviewsBtn = document.getElementById("accountTabReviews");
   const tabAffiliateBtn = document.getElementById("accountTabAffiliate");
+  const tabWishlistBtn = document.getElementById("accountTabWishlist");
   const profileSection = document.getElementById("accountProfileSection");
   const reviewsSection = document.getElementById("accountReviewsSection");
   const affiliateSection = document.getElementById("accountAffiliateSection");
+  const wishlistSection = document.getElementById("accountWishlistSection");
   const accountContent = document.querySelector(".account-content");
   const sidebar = document.querySelector(".account-sidebar");
   const backFromReviewsBtn = document.getElementById("accountBackFromReviews");
@@ -33,6 +35,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const backFromProfileBtn = document.getElementById("accountBackFromProfile");
   const accountHeaderBackBtn = document.getElementById("accountHeaderBackBtn");
   const reviewsList = document.getElementById("accountReviewsList");
+  const wishlistGrid = document.getElementById("accountWishlistGrid");
 
   const affiliateJoinCard = document.getElementById("accountAffiliateJoinCard");
   const affiliateDashboardCard = document.getElementById("accountAffiliateDashboardCard");
@@ -160,7 +163,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const copy = {
       main: {
         title: "My Account",
-        subtitle: "Manage your personal details, reviews, affiliate profile, orders, and password.",
+        subtitle: "Manage your personal details, reviews, affiliate profile, orders, wishlist, and password.",
       },
       profile: {
         title: "Profile",
@@ -170,11 +173,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         title: "Reviews",
         subtitle: "Track your product feedback and open any item directly to its Reviews section.",
       },
-      affiliate: {
-        title: "Affiliate Program",
-        subtitle: "Manage your referral code, monitor commissions, and grow your affiliate earnings.",
-      },
-    };
+      wishlist: {
+        title: "Wishlist",
+        subtitle: "Review saved products and move them to cart from your account.",
+      },    };
     const active = copy[tab] || copy.main;
     accountHeaderTitle.textContent = active.title;
     accountHeaderSubtitle.textContent = active.subtitle;
@@ -210,10 +212,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     profileSection?.classList.add("account-hidden");
     reviewsSection?.classList.add("account-hidden");
     affiliateSection?.classList.add("account-hidden");
+    wishlistSection?.classList.add("account-hidden");
 
     tabProfileBtn?.classList.remove("account-active");
     tabReviewsBtn?.classList.remove("account-active");
     tabAffiliateBtn?.classList.remove("account-active");
+    tabWishlistBtn?.classList.remove("account-active");
 
     hideReviewEditor();
     accountContent?.classList.add("account-hidden");
@@ -229,10 +233,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     profileSection?.classList.add("account-hidden");
     reviewsSection?.classList.add("account-hidden");
     affiliateSection?.classList.add("account-hidden");
+    wishlistSection?.classList.add("account-hidden");
 
     tabProfileBtn?.classList.remove("account-active");
     tabReviewsBtn?.classList.remove("account-active");
     tabAffiliateBtn?.classList.remove("account-active");
+    tabWishlistBtn?.classList.remove("account-active");
 
     if (isMobileAccountView()) {
       sidebar?.classList.add("account-hidden");
@@ -247,6 +253,16 @@ document.addEventListener("DOMContentLoaded", async () => {
       reviewsSection?.classList.remove("account-hidden");
       tabReviewsBtn?.classList.add("account-active");
       loadMyReviews();
+      if (shouldScroll) window.scrollTo({ top: 0, behavior: "auto" });
+      return;
+    }
+
+    if (tab === "wishlist") {
+      updateAccountHeader("wishlist");
+      wishlistSection?.classList.remove("account-hidden");
+      tabWishlistBtn?.classList.add("account-active");
+      loadWishlistSection();
+      hideReviewEditor();
       if (shouldScroll) window.scrollTo({ top: 0, behavior: "auto" });
       return;
     }
@@ -372,6 +388,157 @@ document.addEventListener("DOMContentLoaded", async () => {
       })
       .join("");
 
+  }
+  function getWishlistCategoryLabel(category) {
+    const key = String(category || "").toLowerCase();
+    const map = {
+      laptops: "LAPTOPS & COMPUTERS",
+      phones: "PHONES & TABLETS",
+      monitors: "MONITORS & DISPLAYS",
+      accessories: "ACCESSORIES",
+      storage: "STORAGE DEVICES",
+      printers: "PRINTERS & SCANNERS",
+      others: "OTHERS",
+    };
+    return map[key] || "PRODUCT";
+  }
+
+  function normalizeWishlistStock(product) {
+    return Number(product?.countInStock ?? product?.stock_quantity ?? product?.stock ?? 0);
+  }
+
+  async function loadWishlistSection() {
+    if (!wishlistGrid) return;
+
+    const token = typeof getToken === "function" ? getToken() : null;
+    if (!token) {
+      wishlistGrid.innerHTML = `
+        <div class="account-wishlist-auth-required">
+          <h3>Please sign in to view your wishlist</h3>
+          <p>Your wishlist is only available for logged-in users.</p>
+          <a class="btn" href="login.html">Sign in</a>
+        </div>
+      `;
+      return;
+    }
+
+    wishlistGrid.innerHTML = `<div class="account-reviews-note">Loading wishlist...</div>`;
+
+    try {
+      const res = await fetch(`${API_BASE}/wishlist`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Failed to load wishlist");
+
+      if (!Array.isArray(data) || data.length === 0) {
+        wishlistGrid.innerHTML = `
+          <div class="account-wishlist-empty" role="status" aria-live="polite">
+            <div class="account-wishlist-empty-icon" aria-hidden="true">
+              <svg viewBox="0 0 64 64" focusable="false">
+                <path d="M32 57 28.5 53.9C16 42.6 8 35.4 8 25.8 8 17.9 14.1 12 22 12c4.5 0 8.8 2.1 11 5.5C35.2 14.1 39.5 12 44 12c7.9 0 14 5.9 14 13.8 0 9.6-8 16.8-20.5 28.1z"></path>
+              </svg>
+            </div>
+            <h3>No products were added to the wishlist page.</h3>
+            <p>Browse products and tap the wishlist icon to save your favorites.</p>
+          </div>
+        `;
+        return;
+      }
+
+      wishlistGrid.innerHTML = data.map((p) => {
+        const id = String(p?._id || p?.productId || p?.id || "");
+        const imageRaw = p.image || p.image_url || (Array.isArray(p.images) ? p.images[0] : "") || "assets/img/placeholder.svg";
+        const image = typeof window.resolveImage === "function" ? window.resolveImage(imageRaw) : String(imageRaw || "");
+        const stock = normalizeWishlistStock(p);
+        const shortDesc = String(p.short_description || p.description || "").trim();
+
+        return `
+          <article class="account-wishlist-card" data-id="${escapeHtml(id)}">
+            <a class="account-wishlist-media" href="product.html?id=${encodeURIComponent(id)}">
+              <img src="${escapeHtml(image)}" alt="${escapeHtml(p.name || "Product")}" width="140" height="140" loading="lazy" decoding="async">
+            </a>
+            <div class="account-wishlist-info">
+              <div class="account-wishlist-category">${escapeHtml(getWishlistCategoryLabel(p.category))}</div>
+              <a class="account-wishlist-name" href="product.html?id=${encodeURIComponent(id)}">${escapeHtml(p.name || "Product")}</a>
+              <p class="account-wishlist-desc">${escapeHtml(shortDesc || "No description available")}</p>
+              <div class="account-wishlist-price">GHC ${Number(p.price || 0).toFixed(2)}</div>
+              <div class="account-wishlist-stock ${stock > 0 ? "in" : "out"}">${stock > 0 ? `In Stock (${stock})` : "Out of Stock"}</div>
+              <div class="account-wishlist-actions">
+                <button type="button" class="account-wishlist-cart-btn" data-action="add" data-id="${escapeHtml(id)}" ${stock > 0 ? "" : "disabled"}>${stock > 0 ? "Add to Cart" : "Out of Stock"}</button>
+                <button type="button" class="account-wishlist-remove-btn" data-action="remove" data-id="${escapeHtml(id)}">Remove</button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+
+      wishlistGrid.querySelectorAll("button[data-action='remove']").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const productId = btn.dataset.id;
+          if (!productId) return;
+          try {
+            const removeRes = await fetch(`${API_BASE}/wishlist/${encodeURIComponent(productId)}`, {
+              method: "DELETE",
+              headers: { Authorization: `Bearer ${token}` },
+            });
+            if (!removeRes.ok) throw new Error("Failed to remove from wishlist");
+            showToast?.("Removed from wishlist", "success");
+            loadWishlistSection();
+            document.dispatchEvent(new Event("wishlist-updated"));
+          } catch (error) {
+            showToast?.(error.message || "Failed to remove from wishlist", "error");
+          }
+        });
+      });
+
+      wishlistGrid.querySelectorAll("button[data-action='add']").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const productId = btn.dataset.id;
+          const product = data.find((item) => String(item?._id || item?.productId || item?.id || "") === String(productId));
+          if (!product) return;
+
+          const getCart = typeof window.CONFIG?.loadCart === "function"
+            ? window.CONFIG.loadCart
+            : () => JSON.parse(localStorage.getItem("deetech-cart") || "[]");
+          const setCart = typeof window.CONFIG?.saveCart === "function"
+            ? window.CONFIG.saveCart
+            : (cart) => localStorage.setItem("deetech-cart", JSON.stringify(cart));
+
+          const cart = getCart();
+          const stock = normalizeWishlistStock(product);
+          const existing = cart.find((item) => String(item._id || item.productId || item.id) === String(productId));
+
+          if (existing) {
+            const nextQty = Number(existing.qty || existing.quantity || 0) + 1;
+            if (nextQty > stock) {
+              showToast?.("You can't add more than available stock", "info");
+              return;
+            }
+            existing.qty = nextQty;
+          } else {
+            const imageRaw = product.image || product.image_url || (Array.isArray(product.images) ? product.images[0] : "") || "assets/img/placeholder.svg";
+            const image = typeof window.resolveImage === "function" ? window.resolveImage(imageRaw) : String(imageRaw || "");
+            cart.push({
+              _id: productId,
+              productId,
+              name: product.name,
+              price: Number(product.price || 0),
+              image,
+              qty: 1,
+              countInStock: stock,
+            });
+          }
+
+          setCart(cart);
+          document.dispatchEvent(new Event("cart-updated"));
+          showToast?.(`[${product.name}] added to cart`, "success");
+        });
+      });
+    } catch (error) {
+      console.error("Wishlist load error:", error);
+      wishlistGrid.innerHTML = `<div class="account-reviews-note">Unable to load wishlist right now.</div>`;
+    }
   }
   async function loadMyReviews() {
     try {
@@ -835,6 +1002,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   tabProfileBtn?.addEventListener("click", () => activateTab("profile"));
   tabReviewsBtn?.addEventListener("click", () => activateTab("reviews"));
   tabAffiliateBtn?.addEventListener("click", () => activateTab("affiliate"));
+  tabWishlistBtn?.addEventListener("click", () => activateTab("wishlist"));
 
   backFromProfileBtn?.addEventListener("click", showAccountMenu);
   accountHeaderBackBtn?.addEventListener("click", showAccountMenu);
@@ -862,7 +1030,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
   if (isMobileAccountView()) {
-    if (tabFromUrl === "reviews" || tabFromUrl === "affiliate" || tabFromUrl === "profile") {
+    if (tabFromUrl === "reviews" || tabFromUrl === "affiliate" || tabFromUrl === "wishlist" || tabFromUrl === "profile") {
       activateTab(tabFromUrl, { scroll: false });
     } else {
       showAccountMenu();
@@ -871,6 +1039,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     activateTab("reviews", { scroll: false });
   } else if (tabFromUrl === "affiliate") {
     activateTab("affiliate", { scroll: false });
+  } else if (tabFromUrl === "wishlist") {
+    activateTab("wishlist", { scroll: false });
   } else {
     activateTab("profile", { scroll: false });
   }
@@ -882,7 +1052,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       if (
         profileSection?.classList.contains("account-hidden") &&
         reviewsSection?.classList.contains("account-hidden") &&
-        affiliateSection?.classList.contains("account-hidden")
+        affiliateSection?.classList.contains("account-hidden") &&
+        wishlistSection?.classList.contains("account-hidden")
       ) {
         activateTab("profile", { scroll: false });
       }
@@ -896,6 +1067,16 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   loadAccountInfo();
 });
+
+
+
+
+
+
+
+
+
+
 
 
 
