@@ -1,8 +1,13 @@
 import React from 'react'
+import Hero from './sections/Hero'
+import Footer from './layout/Footer'
 
 const Home = () => {
   return (
-    <div>Home</div>
+    <div>
+      <Hero />
+      <Footer />
+    </div>
   )
 }
 
